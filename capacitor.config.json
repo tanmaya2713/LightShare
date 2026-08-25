@@ -1,0 +1,19 @@
+{
+  "appId": "com.lightshare.transfer.app",
+  "appName": "LightShare",
+  "webDir": "app/static",
+  "bundledWebRuntime": false,
+  "server": {
+    "cleartext": true,
+    "allowNavigation": ["*"]
+  },
+  "android": {
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#060813"
+    }
+  }
+}

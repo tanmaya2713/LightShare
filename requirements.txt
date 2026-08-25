@@ -1,0 +1,8 @@
+fastapi>=0.103.0
+uvicorn>=0.23.2
+aiofiles>=23.2.1
+python-multipart>=0.0.6
+zeroconf>=0.119.0
+qrcode>=7.4.2
+colorama>=0.4.6
+pillow>=10.0.0

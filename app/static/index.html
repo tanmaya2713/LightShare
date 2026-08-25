@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#080C15">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icon-192.png">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <title>LightShare V1.0 - High-Speed 30GB+ Local & Hotspot Transfer</title>
+    
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        app: {
+                            canvas: '#080C15',
+                            surface: '#101726',
+                            surfaceHover: '#162035',
+                            surfaceBorder: 'rgba(255, 255, 255, 0.08)',
+                            surfaceBorderBright: 'rgba(255, 255, 255, 0.16)',
+                            lime: '#D4F672',
+                            limeHover: '#C2E85A',
+                            lilac: '#EAE3FF',
+                            mint: '#D2F6EC',
+                            coral: '#FFDCD1',
+                        }
+                    },
+                    borderRadius: {
+                        'pill': '9999px',
+                        'card': '24px',
+                        'card-lg': '28px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Embedded QR Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
+            --sal: env(safe-area-inset-left, 0px);
+            --sar: env(safe-area-inset-right, 0px);
+        }
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+
+        input, textarea {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+            -webkit-touch-callout: default !important;
+        }
+
+        img, svg, canvas, video, audio {
+            pointer-events: auto;
+            -webkit-user-drag: none !important;
+            user-drag: none !important;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #080C15;
+            background-image: radial-gradient(circle at 50% 0%, #152038 0%, #080C15 65%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+            color: #F8FAFC;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Apple & Android Glassmorphic Cards */
+        .glass-card {
+            background: rgba(16, 23, 38, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 24px;
+        }
+
+        .glass-card-bright {
+            background: rgba(20, 29, 48, 0.82);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 26px;
+        }
+
+        /* Glassmorphic Segmented Control */
+        .glass-segmented {
+            background: rgba(8, 13, 23, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            padding: 4px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .glass-segmented::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Typography Hierarchy */
+        .hero-headline {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.04em;
+            line-height: 1.08;
+            font-weight: 800;
+        }
+
+        .eyebrow-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* Buttons */
+        .btn-lime-pill {
+            border-radius: 9999px;
+            background-color: #D4F672;
+            color: #0A0E17;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 11px 24px;
+            transition: all 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(212, 246, 114, 0.25);
+        }
+        .btn-lime-pill:hover {
+            background-color: #C2E85A;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(212, 246, 114, 0.35);
+        }
+        .btn-lime-pill:active {
+            transform: translateY(1px);
+        }
+
+        .btn-dark-pill {
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #FFFFFF;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 10px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            transition: all 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-dark-pill:hover {
+            background-color: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        .btn-dark-pill:active {
+            transform: translateY(1px);
+        }
+
+        .btn-lilac-pill {
+            border-radius: 9999px;
+            background-color: rgba(234, 227, 255, 0.12);
+            color: #EAE3FF;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 10px 22px;
+            border: 1px solid rgba(234, 227, 255, 0.25);
+            transition: all 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-lilac-pill:hover {
+            background-color: rgba(234, 227, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-icon-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            transition: all 0.18s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .btn-icon-circle:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: scale(1.05);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 9999px;
+        }
+
+        /* Modal Overlays */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 7, 13, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+            animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Drop Zone */
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.16);
+            border-radius: 24px;
+            transition: all 0.22s ease;
+        }
+        .drop-zone.drag-active {
+            border-color: #D4F672;
+            background-color: rgba(212, 246, 114, 0.05);
+            transform: scale(1.01);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#D4F672] selection:text-black">
+
+    <!-- ================================================================= -->
+    <!-- APP BOOT LOADING OVERLAY SCREEN -->
+    <!-- ================================================================= -->
+    <div id="appSplashScreen" class="fixed inset-0 z-50 bg-[#080C15] flex flex-col items-center justify-center p-6 transition-opacity duration-500">
+        <div class="max-w-xs w-full text-center space-y-6">
+            <div class="w-16 h-16 rounded-full bg-[#D4F672] flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(212,246,114,0.3)]">
+                <svg class="w-8 h-8 text-[#0A0E17]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">LightShare V1.0</h1>
+                <p class="eyebrow-tag text-neutral-400 mt-1">Zero-Data Local P2P Transfer Engine</p>
+            </div>
+
+            <div class="space-y-2">
+                <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                    <div id="splashProgressBar" class="bg-[#D4F672] h-full w-0 transition-all duration-200 rounded-full"></div>
+                </div>
+                <div class="flex justify-between text-[11px] font-mono text-neutral-400">
+                    <span id="splashStatusText">Binding socket 0.0.0.0...</span>
+                    <span id="splashPercent">0%</span>
+                </div>
+            </div>
+
+            <p class="eyebrow-tag text-neutral-500 text-[10px]">By Tanmaya Mahapatra (Alias: Retired AME)</p>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TOP NAVIGATION CHROME -->
+    <!-- ================================================================= -->
+    <header class="sticky top-0 z-40 bg-[#080C15]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-3">
+        <div class="max-w-5xl mx-auto flex items-center justify-between gap-3">
+            <!-- Brand & IP Status -->
+            <div class="flex items-center gap-3 cursor-pointer flex-shrink-0" onclick="switchTab('radar')">
+                <div class="w-9 h-9 rounded-full bg-[#D4F672] text-[#0A0E17] flex items-center justify-center flex-shrink-0 font-black shadow-[0_0_15px_rgba(212,246,114,0.3)]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-sm sm:text-base font-extrabold text-white tracking-tight">LightShare</span>
+                        <span class="eyebrow-tag px-1.5 py-0.5 rounded-full bg-white/10 text-white text-[9px]">V1.0</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[11px] font-mono text-neutral-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#D4F672] animate-pulse"></span>
+                        <span id="currentIpBadge" class="text-neutral-200 font-medium">127.0.0.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Actions -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- Adapter Selector (Desktop only) -->
+                <div class="relative hidden lg:block">
+                    <select id="adapterSelect" onchange="changeAdapterIp(this.value)" class="bg-[#101726] border border-white/15 text-xs text-neutral-200 rounded-full px-3.5 py-1.5 outline-none font-mono focus:border-[#D4F672] cursor-pointer transition-colors max-w-[180px] truncate">
+                        <option value="">Detecting Network...</option>
+                    </select>
+                </div>
+
+                <!-- Sound Synthesizer Circle Button -->
+                <button onclick="toggleAudioSynth()" id="audioSynthBtn" class="btn-icon-circle" title="Toggle Sound Synthesizer">
+                    <svg id="audioIconOn" class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                    </svg>
+                    <svg id="audioIconOff" class="w-4 h-4 hidden text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
+                    </svg>
+                </button>
+
+                <!-- Terms & Conditions Button -->
+                <button onclick="openTermsModal()" class="hidden md:flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white transition-colors border border-white/10 text-xs font-medium" title="Terms & Conditions">
+                    <span>Terms</span>
+                </button>
+
+                <!-- User Profile Pill -->
+                <button onclick="openProfileModal()" id="userProfileBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 transition-all text-xs font-semibold text-white" title="Customize Profile">
+                    <span id="headerAvatarBox" class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs flex-shrink-0">
+                        <!-- Injected -->
+                    </span>
+                    <span id="headerUserName" class="hidden sm:inline font-mono font-medium max-w-[100px] truncate">Retired AME</span>
+                </button>
+
+                <!-- Camera Scanner Circle Button -->
+                <button onclick="openScannerModal()" class="btn-icon-circle bg-white text-black hover:bg-neutral-200 border-none" title="Scan Peer QR">
+                    <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================================================================= -->
+    <!-- MAIN APPLICATION CONTAINER (with pb-28 to allow bottom nav clearance) -->
+    <!-- ================================================================= -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-5 pb-28 space-y-6">
+
+        <!-- ================================================================= -->
+        <!-- TAB 1: RADAR / HERO & DISCOVERY -->
+        <!-- ================================================================= -->
+        <section id="tab-radar" class="tab-content block space-y-6">
+
+            <!-- 1. SLEEK DARK HERO CARD WITH SURGICAL LIME HIGHLIGHTS -->
+            <div class="glass-card-bright p-6 sm:p-8 relative overflow-hidden space-y-6">
+                <!-- Badges Row -->
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                    <span class="eyebrow-tag px-2.5 py-1 rounded-full bg-[#D4F672]/15 text-[#D4F672] border border-[#D4F672]/30">
+                        100% Bit-for-Bit Lossless
+                    </span>
+                    <span class="eyebrow-tag px-2.5 py-1 rounded-full bg-white/5 text-neutral-300 border border-white/10">
+                        AirDrop & iOS Compatible
+                    </span>
+                    <span class="eyebrow-tag px-2.5 py-1 rounded-full bg-white/5 text-neutral-300 border border-white/10">
+                        Zero Cloud Cost (₹0)
+                    </span>
+                </div>
+
+                <!-- Display Headline -->
+                <div class="text-center space-y-2 max-w-2xl mx-auto">
+                    <h2 class="text-2xl sm:text-4xl md:text-5xl text-white hero-headline">
+                        High-Speed Local File Sharing.
+                    </h2>
+                    <p class="text-xs sm:text-sm text-neutral-400 font-normal leading-relaxed">
+                        Stream 30GB+ files, 4K video, and raw media directly over Wi-Fi or Hotspot at <span class="text-[#D4F672] font-semibold">100+ MB/s parallel speeds</span>.
+                    </p>
+                </div>
+
+                <!-- Centered Radar Canvas Frame -->
+                <div class="w-full max-w-md mx-auto h-44 sm:h-52 rounded-2xl bg-[#080C15] p-2 relative overflow-hidden border border-white/10 flex items-center justify-center shadow-inner">
+                    <canvas id="particleMeshCanvas" class="w-full h-full block"></canvas>
+                    <div class="absolute bottom-2.5 right-3 eyebrow-tag text-[#D4F672] text-[10px] flex items-center gap-1.5 pointer-events-none bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#D4F672] animate-ping"></span>
+                        <span id="particleHudStatus">Radar 5GHz Active</span>
+                    </div>
+                </div>
+
+                <!-- Direct URL Box -->
+                <div class="max-w-md mx-auto flex items-center justify-between bg-black/40 rounded-full p-1.5 pl-4 border border-white/10">
+                    <div class="font-mono text-xs text-[#D4F672] font-medium truncate pr-2" id="serverUrlText">
+                        http://loading...
+                    </div>
+                    <button onclick="copyServerUrl()" class="btn-dark-pill text-xs py-1.5 px-3.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        Copy Link
+                    </button>
+                </div>
+
+                <!-- Primary Action Pills -->
+                <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
+                    <button onclick="switchTab('send')" class="btn-lime-pill">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                        Send Files
+                    </button>
+                    <button onclick="switchTab('receive')" class="btn-dark-pill">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Receive Files
+                    </button>
+                    <button onclick="switchTab('beam')" class="btn-lilac-pill">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        Quick Beam
+                    </button>
+                </div>
+
+                <!-- Telemetry Oscilloscope -->
+                <div class="pt-4 border-t border-white/10 text-left">
+                    <div class="flex items-center justify-between text-xs font-mono text-neutral-400 mb-2">
+                        <span class="text-neutral-300">LAN TELEMETRY OSCILLOSCOPE</span>
+                        <span id="hudSpeedReading" class="text-[#D4F672] font-bold">0.0 MB/s (Peak: 0.0 MB/s)</span>
+                    </div>
+                    <canvas id="speedOscilloscopeCanvas" class="w-full h-11 rounded-xl bg-black/60 border border-white/10 block"></canvas>
+                </div>
+            </div>
+
+            <!-- 2. NEARBY RADAR SENSOR DISCOVERY CARD -->
+            <div class="glass-card p-6 space-y-5">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-[#D4F672] animate-pulse"></span>
+                            <h3 class="text-lg font-bold text-white">Nearby Radar Discovery</h3>
+                            <span class="eyebrow-tag px-2 py-0.5 rounded-full bg-white/10 text-[#D4F672]">Sensors Ready</span>
+                        </div>
+                        <p class="text-xs text-neutral-400 mt-0.5">Scanning via Wi-Fi LAN broadcast, Bluetooth LE & Spatial Proximity</p>
+                    </div>
+
+                    <button onclick="requestRealisticSensorPermissions()" id="sensorAuthBtn" class="btn-dark-pill text-xs py-2 px-4 border-[#D4F672]/30 text-[#D4F672] hover:bg-[#D4F672]/10 self-stretch sm:self-auto">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Activate Real Sensors</span>
+                    </button>
+                </div>
+
+                <!-- 3 Hardware Sensors -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="eyebrow-tag text-neutral-400 text-[10px]">Wi-Fi LAN Radio</p>
+                            <p id="sensorWifiStatus" class="text-xs font-bold text-[#D4F672] truncate mt-0.5">5GHz Online (0 Data)</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="eyebrow-tag text-neutral-400 text-[10px]">Bluetooth LE</p>
+                            <p id="sensorBleStatus" class="text-xs font-bold text-[#EAE3FF] truncate mt-0.5">Broadcasting Ready</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="eyebrow-tag text-neutral-400 text-[10px]">Spatial Proximity</p>
+                            <p id="sensorLocStatus" class="text-xs font-bold text-[#D2F6EC] truncate mt-0.5">Local High Precision</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discovered Peers Feed -->
+                <div class="space-y-3 pt-2">
+                    <div class="flex items-center justify-between text-xs font-mono text-neutral-400">
+                        <span class="text-white font-bold flex items-center gap-2">
+                            NEARBY PERSONS ON RADAR (<span id="radarPeerCount">4</span>)
+                        </span>
+                        <span class="text-[#D4F672] font-semibold text-[11px]">Tap to Beam File Directly</span>
+                    </div>
+
+                    <div id="radarPeersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. PAIRING & STORAGE STATS -->
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- QR Code Box -->
+                <div class="glass-card p-6 flex flex-col items-center text-center justify-between space-y-4">
+                    <div>
+                        <span class="eyebrow-tag text-neutral-400">INSTANT PAIRING</span>
+                        <h3 class="text-lg font-bold text-white mt-0.5">Scan to Join Session</h3>
+                        <p class="text-xs text-neutral-400 mt-0.5">Point any camera or scanner at this QR code</p>
+                    </div>
+
+                    <div id="qrcodeBox" class="p-3.5 bg-white rounded-2xl shadow-xl flex items-center justify-center my-1">
+                        <!-- QR Code Canvas Injected -->
+                    </div>
+
+                    <div class="flex items-center justify-center gap-2">
+                        <button onclick="downloadQrAsImage('qrcodeBox', 'LightShare-QR.png')" class="btn-dark-pill text-xs py-1.5 px-3.5">
+                            Save QR Image
+                        </button>
+                        <button onclick="openScannerModal()" class="btn-dark-pill text-xs py-1.5 px-3.5 border-white/20">
+                            Camera Scanner
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Storage & Performance Metrics -->
+                <div class="glass-card p-6 flex flex-col justify-between space-y-4">
+                    <div>
+                        <span class="eyebrow-tag text-neutral-400">HOST TELEMETRY</span>
+                        <h3 class="text-lg font-bold text-white mt-0.5">Storage & Stream Engine</h3>
+                        <p class="text-xs text-neutral-400 mt-0.5">Host disk capacity & concurrent transfer streams</p>
+
+                        <div class="space-y-1.5 mt-4">
+                            <div class="flex justify-between text-xs font-mono">
+                                <span class="text-neutral-400">HOST FREE SPACE</span>
+                                <span id="storageText" class="text-white font-bold">Checking...</span>
+                            </div>
+                            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                                <div id="storageFill" class="bg-[#D4F672] h-full w-0 rounded-full transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        <div class="p-3 bg-white/5 rounded-2xl border border-white/10 text-center">
+                            <p class="eyebrow-tag text-neutral-400 text-[10px]">Max File Size</p>
+                            <p class="text-lg font-extrabold text-white mt-0.5">35 GB</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-2xl border border-white/10 text-center">
+                            <p class="eyebrow-tag text-neutral-400 text-[10px]">Buffer Size</p>
+                            <p class="text-lg font-extrabold text-[#D4F672] mt-0.5">4MB Stream</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs font-mono text-neutral-400 pt-2 border-t border-white/10">
+                        <span class="flex items-center gap-1.5 text-white">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#D4F672]"></span>
+                            mDNS Zeroconf Active
+                        </span>
+                        <span>Port :53317</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- TAB 2: SEND FILES / MULTI-STREAM UPLOADS -->
+        <!-- ================================================================= -->
+        <section id="tab-send" class="tab-content hidden space-y-6">
+            <div class="glass-card-bright p-6 sm:p-8 space-y-6">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-white/10">
+                    <div>
+                        <span class="eyebrow-tag text-neutral-400">PARALLEL TURBO ENGINE</span>
+                        <h2 class="text-2xl font-bold text-white tracking-tight mt-0.5">Send Files Losslessly</h2>
+                        <p class="text-xs text-neutral-400">Select any files up to 30GB+ with automatic 4-Digit Security PIN generation</p>
+                    </div>
+
+                    <!-- iOS / Android Glassmorphic Category Segmented Control -->
+                    <div class="glass-segmented inline-flex gap-1 overflow-x-auto max-w-full">
+                        <button onclick="filterSendCategory('all')" id="send-cat-all" class="px-3 py-1.5 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-[#0A0E17] whitespace-nowrap transition-all">All Files</button>
+                        <button onclick="filterSendCategory('photo')" id="send-cat-photo" class="px-3 py-1.5 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Photos</button>
+                        <button onclick="filterSendCategory('video')" id="send-cat-video" class="px-3 py-1.5 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Videos</button>
+                        <button onclick="filterSendCategory('music')" id="send-cat-music" class="px-3 py-1.5 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Music</button>
+                        <button onclick="filterSendCategory('app')" id="send-cat-app" class="px-3 py-1.5 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Apps</button>
+                        <button onclick="filterSendCategory('document')" id="send-cat-document" class="px-3 py-1.5 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Docs</button>
+                    </div>
+                </div>
+
+                <!-- Drag & Drop Zone -->
+                <div 
+                    id="dropZone" 
+                    class="drop-zone p-8 sm:p-12 text-center cursor-pointer flex flex-col items-center justify-center gap-3 bg-white/[0.02] hover:bg-white/[0.04]"
+                    onclick="document.getElementById('fileInput').click()"
+                    ondragover="handleDragOver(event)" 
+                    ondragleave="handleDragLeave(event)" 
+                    ondrop="handleDrop(event)"
+                >
+                    <input type="file" id="fileInput" multiple class="hidden" onchange="handleFileSelect(event)">
+                    
+                    <div class="w-14 h-14 rounded-full bg-[#D4F672] flex items-center justify-center text-black shadow-lg">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                    </div>
+
+                    <div class="space-y-0.5">
+                        <h3 id="dropZoneTitle" class="text-base sm:text-lg font-bold text-white">
+                            Drag & Drop files here, or <span class="text-[#D4F672] underline">Browse</span>
+                        </h3>
+                        <p id="dropZoneSubtitle" class="text-xs text-neutral-400 font-mono">Original quality preserved • SHA-256 Verified • Up to 35 GB</p>
+                    </div>
+
+                    <button type="button" class="btn-lime-pill mt-2 py-2 px-5 text-xs">
+                        Select Files to Transfer
+                    </button>
+                </div>
+
+                <!-- Active Upload Queue -->
+                <div id="uploadQueueContainer" class="space-y-3 hidden">
+                    <h4 class="eyebrow-tag text-neutral-400">ACTIVE MULTI-STREAM UPLOADS</h4>
+                    <div id="uploadQueueList" class="space-y-3">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- TAB 3: RECEIVE FILES / REPOSITORY & CATEGORIES -->
+        <!-- ================================================================= -->
+        <section id="tab-receive" class="tab-content hidden space-y-6">
+            <div class="glass-card-bright p-6 sm:p-8 space-y-6">
+                <!-- Search & Filters -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-white/10">
+                    <div>
+                        <span class="eyebrow-tag text-neutral-400">STORAGE REPOSITORY</span>
+                        <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2 mt-0.5">
+                            Received & Shared Files
+                            <span id="completedCountBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-[#D4F672] text-black font-mono font-bold">(0)</span>
+                        </h2>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <div class="relative w-full sm:w-60">
+                            <input 
+                                type="text" 
+                                id="fileSearchInput" 
+                                placeholder="Search files..." 
+                                oninput="searchFiles(this.value)"
+                                class="w-full bg-black/40 border border-white/15 rounded-full pl-9 pr-3 py-1.5 text-xs text-white placeholder-neutral-500 outline-none focus:border-[#D4F672] font-mono"
+                            >
+                            <svg class="w-4 h-4 text-neutral-400 absolute left-3 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+
+                        <button onclick="refreshFilesList()" class="btn-icon-circle" title="Refresh List">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Receiver Section iOS / Android Glassmorphic Category Bar -->
+                <div class="flex items-center justify-between gap-2 overflow-x-auto py-1">
+                    <div class="glass-segmented inline-flex gap-1 overflow-x-auto max-w-full">
+                        <button onclick="filterReceiveCategory('all')" id="recv-cat-all" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-[#0A0E17] whitespace-nowrap transition-all">All (<span id="count-all">0</span>)</button>
+                        <button onclick="filterReceiveCategory('photo')" id="recv-cat-photo" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Photos (<span id="count-photo">0</span>)</button>
+                        <button onclick="filterReceiveCategory('video')" id="recv-cat-video" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Videos (<span id="count-video">0</span>)</button>
+                        <button onclick="filterReceiveCategory('music')" id="recv-cat-music" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Music (<span id="count-music">0</span>)</button>
+                        <button onclick="filterReceiveCategory('app')" id="recv-cat-app" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Apps (<span id="count-app">0</span>)</button>
+                        <button onclick="filterReceiveCategory('document')" id="recv-cat-document" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all">Docs (<span id="count-document">0</span>)</button>
+                    </div>
+                </div>
+
+                <!-- Batch Actions Bar -->
+                <div id="batchActionBar" class="hidden p-2.5 bg-white/5 rounded-full border border-white/15 flex items-center justify-between px-5">
+                    <span class="text-xs font-mono text-white"><span id="batchCount">0</span> files selected</span>
+                    <button onclick="batchDeleteSelected()" class="btn-lime-pill bg-red-500 text-white hover:bg-red-600 text-xs py-1 px-3.5">
+                        Delete Selected
+                    </button>
+                </div>
+
+                <!-- Files List -->
+                <div id="completedFilesList" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- TAB 4: QUICK BEAM / CLIPBOARD -->
+        <!-- ================================================================= -->
+        <section id="tab-beam" class="tab-content hidden space-y-6">
+            <!-- Composer Card -->
+            <div class="glass-card-bright p-6 sm:p-8 space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+                    <div>
+                        <span class="eyebrow-tag text-[#EAE3FF]">INSTANT P2P CLIPBOARD</span>
+                        <h2 class="text-2xl font-bold text-white tracking-tight mt-0.5">Quick Beam</h2>
+                        <p class="text-xs text-neutral-400">Beam text, URLs, code snippets, or Wi-Fi keys across phones & PCs</p>
+                    </div>
+
+                    <!-- Type Selector Pills -->
+                    <div class="glass-segmented inline-flex gap-1 overflow-x-auto max-w-full">
+                        <button onclick="setBeamType('text')" id="beamtype-text" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-black whitespace-nowrap">Text</button>
+                        <button onclick="setBeamType('url')" id="beamtype-url" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white whitespace-nowrap">URL</button>
+                        <button onclick="setBeamType('code')" id="beamtype-code" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white whitespace-nowrap">Code</button>
+                        <button onclick="setBeamType('key')" id="beamtype-key" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white whitespace-nowrap">Wi-Fi Key</button>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <textarea 
+                        id="beamTextInput" 
+                        rows="4" 
+                        placeholder="Paste or type text, link, code snippet, or Wi-Fi key to beam across LAN..." 
+                        class="w-full bg-black/40 text-white border border-white/15 rounded-2xl p-4 text-sm font-mono focus:outline-none focus:border-[#D4F672] transition-all resize-none placeholder-neutral-500 shadow-inner"
+                    ></textarea>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                        <span class="text-xs font-mono text-neutral-400">
+                            SENDER: <strong class="text-white font-bold" id="beamSenderLabel">Retired AME</strong>
+                        </span>
+                        <button onclick="sendLiveBeam()" class="btn-lime-pill py-2 px-6 self-end sm:self-auto text-xs">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            BEAM NOW
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed Card -->
+            <div class="glass-card p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                    <span class="eyebrow-tag text-neutral-400">RECENT LIVE BEAMS</span>
+                    <button onclick="clearAllBeams()" class="text-xs text-neutral-400 hover:text-red-400 font-mono transition-colors">Clear All</button>
+                </div>
+
+                <div id="clipboardBeamsList" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- TAB 5: TRANSFER HISTORY -->
+        <!-- ================================================================= -->
+        <section id="tab-history" class="tab-content hidden space-y-6">
+            <div class="glass-card-bright p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-white/10">
+                    <div>
+                        <span class="eyebrow-tag text-neutral-400">AUDIT LOG</span>
+                        <h2 class="text-2xl font-bold text-white tracking-tight mt-0.5">Transfer History</h2>
+                        <p class="text-xs text-neutral-400">Chronological record of all sent and received files</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <div class="glass-segmented inline-flex">
+                            <button onclick="filterHistory('all')" id="hist-pill-all" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-black">All</button>
+                            <button onclick="filterHistory('sent')" id="hist-pill-sent" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white">Sent</button>
+                            <button onclick="filterHistory('received')" id="hist-pill-received" class="px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white">Received</button>
+                        </div>
+                        <button onclick="clearAllHistory()" class="btn-dark-pill text-xs py-1 px-3 text-red-400 hover:text-red-300 border-none">Clear</button>
+                    </div>
+                </div>
+
+                <div id="historyListContainer" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- TAB 6: ABOUT APP & DEVELOPER SECTION -->
+        <!-- ================================================================= -->
+        <section id="tab-about" class="tab-content hidden space-y-6">
+            <div class="glass-card-bright p-6 sm:p-8 space-y-6">
+                <!-- App Header -->
+                <div class="flex items-center gap-4 pb-5 border-b border-white/10">
+                    <div class="w-14 h-14 rounded-full bg-[#D4F672] flex items-center justify-center text-black flex-shrink-0 shadow-[0_0_20px_rgba(212,246,114,0.3)]">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-white">LightShare V1.0</h2>
+                        <p class="eyebrow-tag text-[#D4F672]">Package ID: com.lightshare.transfer.app</p>
+                        <p class="text-xs text-neutral-400 mt-0.5">High-Speed Zero-Config Cross-Platform Local Transfer Ecosystem</p>
+                    </div>
+                </div>
+
+                <!-- Custom User Profile Card -->
+                <div class="p-5 bg-white/5 rounded-2xl border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <div id="aboutAvatarPreview" class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white text-lg flex-shrink-0">
+                            <!-- Injected -->
+                        </div>
+                        <div>
+                            <span class="eyebrow-tag text-neutral-400">CURRENT USER PROFILE</span>
+                            <h3 id="aboutProfileName" class="text-base font-bold text-white mt-0.5 truncate max-w-xs">Retired AME</h3>
+                            <p class="text-xs text-neutral-400 font-mono">Broadcasting on Local LAN Radar</p>
+                        </div>
+                    </div>
+                    <button onclick="openProfileModal()" class="btn-dark-pill text-xs py-2 px-4 self-start sm:self-auto">
+                        Edit Profile
+                    </button>
+                </div>
+
+                <!-- Developer Attribution & Principles -->
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-1.5">
+                        <span class="eyebrow-tag text-[#D4F672]">CREATOR & LEAD DEVELOPER</span>
+                        <h4 class="text-base font-bold text-white">Tanmaya Mahapatra</h4>
+                        <p class="text-xs text-neutral-300 font-mono">Alias: Retired AME</p>
+                        <p class="text-xs text-neutral-400 pt-1 leading-relaxed">
+                            Engineered with asynchronous Python FastAPI, SQLite Write-Ahead Logging (WAL), and HTTP Range 206 lossless streaming.
+                        </p>
+                    </div>
+
+                    <div class="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-1.5">
+                        <span class="eyebrow-tag text-[#EAE3FF]">FREE GUARANTEE</span>
+                        <h4 class="text-base font-bold text-white">100% Free of Cost (₹0)</h4>
+                        <p class="text-xs text-neutral-300 font-mono">No API Keys • No Internet • No Subscriptions</p>
+                        <p class="text-xs text-neutral-400 pt-1 leading-relaxed">
+                            Runs completely offline inside your private local network. Zero cloud reliance, zero external telemetry.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Diagnostics -->
+                <div class="p-5 bg-black/50 rounded-2xl border border-white/10 space-y-2 font-mono text-xs">
+                    <span class="eyebrow-tag text-[#D4F672]">LIVE SYSTEM DIAGNOSTICS</span>
+                    <div class="grid sm:grid-cols-2 gap-2 text-neutral-300 pt-1">
+                        <div>Host URL: <span id="diagUrl" class="text-white font-bold">Loading...</span></div>
+                        <div>mDNS Service: <span class="text-[#D4F672]">LightShare._http._tcp.local.</span></div>
+                        <div>Storage Partition: <span id="diagStorage" class="text-white">Active</span></div>
+                        <div>Buffer Size: <span class="text-[#EAE3FF]">4 MB (Direct I/O)</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- ================================================================= -->
+    <!-- PINNED NATIVE IOS / ANDROID GLASSMORPHIC BOTTOM NAVIGATION BAR -->
+    <!-- ================================================================= -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#0C1220]/80 backdrop-blur-2xl border-t border-white/10 px-2 py-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] flex items-center justify-around shadow-2xl">
+        <button onclick="switchTab('radar')" id="nav-radar" class="flex flex-col items-center justify-center flex-1 py-1 transition-all group">
+            <div id="nav-icon-box-radar" class="w-10 h-6 sm:h-7 rounded-full bg-[#D4F672] text-[#0A0E17] flex items-center justify-center transition-all shadow-[0_0_12px_rgba(212,246,114,0.3)]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+            </div>
+            <span id="nav-label-radar" class="text-[10px] sm:text-[11px] font-mono mt-0.5 font-bold text-white tracking-tight">Radar</span>
+        </button>
+
+        <button onclick="switchTab('send')" id="nav-send" class="flex flex-col items-center justify-center flex-1 py-1 transition-all group">
+            <div id="nav-icon-box-send" class="w-10 h-6 sm:h-7 rounded-full text-neutral-400 group-hover:text-white flex items-center justify-center transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            </div>
+            <span id="nav-label-send" class="text-[10px] sm:text-[11px] font-mono mt-0.5 font-medium text-neutral-400 tracking-tight">Send</span>
+        </button>
+
+        <button onclick="switchTab('receive')" id="nav-receive" class="flex flex-col items-center justify-center flex-1 py-1 transition-all group">
+            <div id="nav-icon-box-receive" class="w-10 h-6 sm:h-7 rounded-full text-neutral-400 group-hover:text-white flex items-center justify-center transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            </div>
+            <span id="nav-label-receive" class="text-[10px] sm:text-[11px] font-mono mt-0.5 font-medium text-neutral-400 tracking-tight">Receive</span>
+        </button>
+
+        <button onclick="switchTab('beam')" id="nav-beam" class="flex flex-col items-center justify-center flex-1 py-1 transition-all group">
+            <div id="nav-icon-box-beam" class="w-10 h-6 sm:h-7 rounded-full text-neutral-400 group-hover:text-white flex items-center justify-center transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <span id="nav-label-beam" class="text-[10px] sm:text-[11px] font-mono mt-0.5 font-medium text-neutral-400 tracking-tight">Beam</span>
+        </button>
+
+        <button onclick="switchTab('history')" id="nav-history" class="flex flex-col items-center justify-center flex-1 py-1 transition-all group">
+            <div id="nav-icon-box-history" class="w-10 h-6 sm:h-7 rounded-full text-neutral-400 group-hover:text-white flex items-center justify-center transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span id="nav-label-history" class="text-[10px] sm:text-[11px] font-mono mt-0.5 font-medium text-neutral-400 tracking-tight">Logs</span>
+        </button>
+
+        <button onclick="switchTab('about')" id="nav-about" class="flex flex-col items-center justify-center flex-1 py-1 transition-all group">
+            <div id="nav-icon-box-about" class="w-10 h-6 sm:h-7 rounded-full text-neutral-400 group-hover:text-white flex items-center justify-center transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span id="nav-label-about" class="text-[10px] sm:text-[11px] font-mono mt-0.5 font-medium text-neutral-400 tracking-tight">About</span>
+        </button>
+    </nav>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: TERMS & PRIVACY POLICY -->
+    <!-- ================================================================= -->
+    <div id="termsModal" class="modal-overlay">
+        <div class="glass-card-bright max-w-lg w-full p-6 sm:p-8 rounded-3xl mx-4 max-h-[85vh] overflow-y-auto relative shadow-2xl space-y-5">
+            <button onclick="closeTermsModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div>
+                <span class="eyebrow-tag text-[#D4F672]">LEGAL & PRIVACY</span>
+                <h3 class="text-xl font-bold text-white mt-1">Terms & Privacy Policy</h3>
+                <p class="text-xs text-neutral-400 font-mono">LightShare V1.0 • 100% Free & Local</p>
+            </div>
+
+            <div class="space-y-3 text-xs text-neutral-300 leading-relaxed font-sans max-h-[50vh] overflow-y-auto pr-2">
+                <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 space-y-1">
+                    <h4 class="text-white font-bold">1. 100% Free of Cost (₹0) Guarantee</h4>
+                    <p class="text-neutral-400">LightShare V1.0 is completely free for personal, commercial, and educational use with zero hidden subscriptions or paid tiers.</p>
+                </div>
+
+                <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 space-y-1">
+                    <h4 class="text-[#D4F672] font-bold">2. Complete Offline Privacy & Zero Tracking</h4>
+                    <p class="text-neutral-400">All file transfers and clipboard beams occur strictly within your Local Area Network (Wi-Fi or Hotspot). LightShare never contacts external telemetry servers or uploads data to the cloud.</p>
+                </div>
+
+                <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 space-y-1">
+                    <h4 class="text-[#EAE3FF] font-bold">3. Lossless Bit-for-Bit Authenticity</h4>
+                    <p class="text-neutral-400">All transmitted media and documents maintain 100% original fidelity without downsampling or metadata stripping, verified via on-the-fly SHA-256 cryptographic hashing.</p>
+                </div>
+
+                <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 space-y-1">
+                    <h4 class="text-white font-bold">4. Developer Attribution</h4>
+                    <p class="text-neutral-400">Created and authored by <strong>Tanmaya Mahapatra (Alias: Retired AME)</strong>. Distributed for global open peer-to-peer productivity.</p>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeTermsModal()" class="btn-lime-pill text-xs py-2 px-5">
+                    I Accept & Agree
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: INCOMING TRANSFER SECURITY PIN HANDSHAKE -->
+    <!-- ================================================================= -->
+    <div id="pinVerifyModal" class="modal-overlay">
+        <div class="glass-card-bright p-6 sm:p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative space-y-5">
+            <button onclick="closePinModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 rounded-full bg-[#D4F672] text-[#0A0E17] flex items-center justify-center mx-auto shadow-lg font-bold">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white">Security PIN Handshake</h3>
+                <p class="text-xs text-neutral-400">Enter the 4-digit transfer code provided by the sender to authorize download:</p>
+            </div>
+
+            <!-- Transfer File Snapshot -->
+            <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div class="truncate flex-1">
+                    <p id="pinTransferFileName" class="text-xs font-bold text-white truncate">Transfer_Payload.zip</p>
+                    <p id="pinTransferFileSize" class="text-[10px] text-neutral-400 font-mono">1.24 GB • Lossless Bit-for-Bit</p>
+                </div>
+            </div>
+
+            <!-- 4-Digit PIN Code Input -->
+            <div class="space-y-2 text-center">
+                <label class="eyebrow-tag text-neutral-400 block">ENTER 4-DIGIT SENDER PIN</label>
+                <input 
+                    type="tel" 
+                    id="pinInputBox" 
+                    maxlength="4" 
+                    placeholder="• • • •" 
+                    class="w-full text-center text-3xl font-mono tracking-[0.5em] py-2.5 bg-black/60 border border-white/20 focus:border-[#D4F672] rounded-2xl text-white outline-none transition-all placeholder:tracking-[0.3em]"
+                    onkeyup="if(event.key==='Enter') submitPinVerification()"
+                >
+                <p id="pinErrorMsg" class="text-xs text-red-400 font-semibold hidden font-mono"></p>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closePinModal()" class="btn-dark-pill w-1/3 py-2.5 text-xs">
+                    Cancel
+                </button>
+                <button onclick="submitPinVerification()" class="btn-lime-pill flex-1 py-2.5 text-xs">
+                    Authorize & Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: USER PROFILE CUSTOMIZER -->
+    <!-- ================================================================= -->
+    <div id="profileModal" class="modal-overlay">
+        <div class="glass-card-bright p-6 sm:p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative space-y-5">
+            <button onclick="closeProfileModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div>
+                <span class="eyebrow-tag text-[#D4F672]">PERSONALIZATION</span>
+                <h3 class="text-xl font-bold text-white mt-1">Customize Profile</h3>
+                <p class="text-xs text-neutral-400">Choose your display name and radar beacon avatar</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="eyebrow-tag text-neutral-400 block mb-1.5">DEVICE / SENDER NAME</label>
+                    <input 
+                        type="text" 
+                        id="profileNameInput" 
+                        maxlength="32" 
+                        class="w-full bg-black/60 border border-white/15 rounded-full px-4 py-2 text-sm text-white font-medium outline-none focus:border-[#D4F672]"
+                        placeholder="Your Name / Device Alias"
+                    >
+                </div>
+
+                <div>
+                    <label class="eyebrow-tag text-neutral-400 block mb-2">CHOOSE RADAR AVATAR</label>
+                    <div id="avatarPickerGrid" class="grid grid-cols-5 gap-2.5">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button onclick="closeProfileModal()" class="btn-dark-pill py-2 px-5 text-xs">Cancel</button>
+                <button onclick="saveUserProfile()" class="btn-lime-pill py-2 px-6 text-xs">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: IN-APP CAMERA SCANNER -->
+    <!-- ================================================================= -->
+    <div id="scannerModal" class="modal-overlay">
+        <div class="glass-card-bright p-6 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative space-y-4 text-center">
+            <button onclick="closeScannerModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div>
+                <span class="eyebrow-tag text-[#D4F672]">OPTICAL PAIRING</span>
+                <h3 class="text-lg font-bold text-white mt-0.5">Scan Peer QR Code</h3>
+                <p id="scannerStatusText" class="text-xs text-neutral-400 mt-0.5">Point your camera at the host QR code</p>
+            </div>
+
+            <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-black border border-white/15">
+                <video id="scannerVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+            </div>
+
+            <button onclick="closeScannerModal()" class="btn-dark-pill py-2 px-5 text-xs">
+                Close Camera
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- CORE JAVASCRIPT LOGIC -->
+    <!-- ================================================================= -->
+    <script>
+        // Global State & Config
+        const serverConfig = { ip: '127.0.0.1', port: 53317, url: 'http://127.0.0.1:53317' };
+        let currentActiveTab = 'radar';
+        let isTransferActive = false;
+        let selectedFileIds = new Set();
+        let telemetryHistory = new Array(30).fill(0);
+        let peakRecordedSpeed = 0;
+        let scannerStream = null;
+        let cachedLoadedFiles = [];
+
+        // Category Filters for Send & Receive
+        let activeSendCategory = 'all';
+        let activeReceiveCategory = 'all';
+
+        const CATEGORY_EXTENSIONS = {
+            photo: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'heic', 'heif', 'raw', 'dng', 'bmp', 'tiff', 'ico'],
+            video: ['mp4', 'mkv', 'mov', 'avi', 'webm', '3gp', 'flv', 'wmv', 'm4v', 'ts'],
+            music: ['mp3', 'wav', 'flac', 'aac', 'm4a', 'ogg', 'opus', 'wma', 'mid', 'aiff'],
+            app: ['apk', 'aab', 'ipa', 'exe', 'msi', 'dmg', 'pkg', 'deb', 'rpm', 'iso'],
+            document: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'md', 'csv', 'json', 'zip', 'rar', '7z', 'tar', 'gz']
+        };
+
+        const CATEGORY_ACCEPTS = {
+            all: '*/*',
+            photo: 'image/*,.heic,.heif,.raw,.dng,.svg,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tiff',
+            video: 'video/*,.mp4,.mkv,.mov,.avi,.webm,.3gp,.flv,.wmv,.m4v,.ts',
+            music: 'audio/*,.mp3,.flac,.wav,.aac,.m4a,.ogg,.opus,.wma',
+            app: '.apk,.aab,.ipa,.exe,.msi,.dmg,.pkg,.deb,.rpm,.iso',
+            document: '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.md,.csv,.json,.zip,.rar,.7z,.tar,.gz'
+        };
+
+        function getFileCategory(filename) {
+            if (!filename) return 'document';
+            const ext = filename.split('.').pop().toLowerCase();
+            for (const [cat, exts] of Object.entries(CATEGORY_EXTENSIONS)) {
+                if (exts.includes(ext)) return cat;
+            }
+            return 'document';
+        }
+
+        function getCategoryBadge(cat) {
+            switch(cat) {
+                case 'photo':
+                    return { label: 'PHOTO', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30', icon: '<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' };
+                case 'video':
+                    return { label: 'VIDEO', bg: 'bg-purple-500/20 text-purple-300 border-purple-500/30', icon: '<svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>' };
+                case 'music':
+                    return { label: 'AUDIO', bg: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30', icon: '<svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>' };
+                case 'app':
+                    return { label: 'APP', bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30', icon: '<svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>' };
+                default:
+                    return { label: 'DOC', bg: 'bg-blue-500/20 text-blue-300 border-blue-500/30', icon: '<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>' };
+            }
+        }
+
+        // Send Section Category Switching
+        function filterSendCategory(cat) {
+            activeSendCategory = cat;
+            const cats = ['all', 'photo', 'video', 'music', 'app', 'document'];
+            cats.forEach(c => {
+                const btn = document.getElementById(`send-cat-${c}`);
+                if (btn) {
+                    if (c === cat) {
+                        btn.className = 'px-3 py-1.5 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-[#0A0E17] whitespace-nowrap transition-all shadow-md';
+                    } else {
+                        btn.className = 'px-3 py-1.5 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all';
+                    }
+                }
+            });
+
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                fileInput.accept = CATEGORY_ACCEPTS[cat] || '*/*';
+            }
+
+            const title = document.getElementById('dropZoneTitle');
+            const sub = document.getElementById('dropZoneSubtitle');
+            if (title) {
+                const labelMap = { all: 'files', photo: 'Photos', video: 'Videos', music: 'Music & Audio', app: 'Apps & Installers', document: 'Documents & Zips' };
+                title.innerHTML = `Drag & Drop <span class="text-[#D4F672]">${labelMap[cat]}</span> here, or <span class="text-[#D4F672] underline">Browse</span>`;
+            }
+            playSynthSound('beam');
+        }
+
+        // Receive Section Category Switching
+        function filterReceiveCategory(cat) {
+            activeReceiveCategory = cat;
+            const cats = ['all', 'photo', 'video', 'music', 'app', 'document'];
+            cats.forEach(c => {
+                const btn = document.getElementById(`recv-cat-${c}`);
+                if (btn) {
+                    const countSpan = document.getElementById(`count-${c}`);
+                    const cnt = countSpan ? countSpan.textContent : '0';
+                    if (c === cat) {
+                        btn.className = 'px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-[#0A0E17] whitespace-nowrap transition-all shadow-md';
+                    } else {
+                        btn.className = 'px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white hover:bg-white/10 whitespace-nowrap transition-all';
+                    }
+                }
+            });
+            renderFilteredFiles();
+            playSynthSound('beam');
+        }
+
+        // User Profile & Avatars
+        const PROFILE_STORAGE_KEY = 'lightshare_user_profile_v1';
+        const AVATARS = [
+            { id: 'astronaut', color: 'text-white', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>' },
+            { id: 'rocket', color: 'text-[#D4F672]', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>' },
+            { id: 'shield', color: 'text-[#EAE3FF]', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>' },
+            { id: 'laptop', color: 'text-[#D2F6EC]', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>' },
+            { id: 'phone', color: 'text-[#FFDCD1]', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>' }
+        ];
+
+        let userProfile = {
+            name: "Retired AME",
+            avatarId: 'astronaut'
+        };
+
+        function loadUserProfile() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY));
+                if (saved && saved.name) userProfile = saved;
+            } catch {}
+            applyUserProfile();
+        }
+
+        function applyUserProfile() {
+            const av = AVATARS.find(a => a.id === userProfile.avatarId) || AVATARS[0];
+            document.getElementById('headerUserName').textContent = userProfile.name;
+            document.getElementById('headerAvatarBox').innerHTML = av.svg;
+            document.getElementById('beamSenderLabel').textContent = userProfile.name;
+            document.getElementById('aboutProfileName').textContent = userProfile.name;
+            document.getElementById('aboutAvatarPreview').innerHTML = av.svg;
+        }
+
+        function openProfileModal() {
+            document.getElementById('profileNameInput').value = userProfile.name;
+            renderAvatarGrid();
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        function renderAvatarGrid() {
+            const grid = document.getElementById('avatarPickerGrid');
+            grid.innerHTML = AVATARS.map(av => {
+                const isSelected = av.id === userProfile.avatarId;
+                const borderClass = isSelected ? 'border-[#D4F672] bg-white/15 scale-105' : 'border-white/10 bg-black/40 hover:border-white/30';
+                return `
+                    <button type="button" onclick="selectAvatar('${av.id}')" class="w-11 h-11 rounded-full border flex items-center justify-center transition-all ${borderClass} ${av.color}">
+                        ${av.svg}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectAvatar(id) {
+            userProfile.avatarId = id;
+            renderAvatarGrid();
+        }
+
+        function saveUserProfile() {
+            const nameInput = document.getElementById('profileNameInput');
+            const name = (nameInput.value || '').trim();
+            if (name) userProfile.name = name;
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(userProfile));
+            applyUserProfile();
+            closeProfileModal();
+            playSynthSound('beam');
+        }
+
+        // Tab Navigation - Native iOS/Android Dock Update
+        function switchTab(tabId) {
+            currentActiveTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            const allTabs = ['radar', 'send', 'receive', 'beam', 'history', 'about'];
+            allTabs.forEach(id => {
+                const iconBox = document.getElementById(`nav-icon-box-${id}`);
+                const label = document.getElementById(`nav-label-${id}`);
+                if (iconBox && label) {
+                    if (id === tabId) {
+                        iconBox.className = 'w-10 h-6 sm:h-7 rounded-full bg-[#D4F672] text-[#0A0E17] flex items-center justify-center transition-all shadow-[0_0_12px_rgba(212,246,114,0.3)]';
+                        label.className = 'text-[10px] sm:text-[11px] font-mono mt-0.5 font-bold text-white tracking-tight';
+                    } else {
+                        iconBox.className = 'w-10 h-6 sm:h-7 rounded-full text-neutral-400 group-hover:text-white flex items-center justify-center transition-all';
+                        label.className = 'text-[10px] sm:text-[11px] font-mono mt-0.5 font-medium text-neutral-400 tracking-tight';
+                    }
+                }
+            });
+
+            if (tabId === 'history') renderHistory();
+            else if (tabId === 'receive') refreshFilesList();
+            else if (tabId === 'beam') refreshClipboardBeams();
+            else if (tabId === 'radar') resizeParticleCanvas();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =====================================================================
+        // Network Info & QR Code
+        // =====================================================================
+        async function loadNetworkInfo() {
+            try {
+                const resp = await fetch('/api/network-info');
+                const data = await resp.json();
+                serverConfig.ip = data.primary_ip;
+                serverConfig.port = data.port;
+                serverConfig.url = `http://${data.primary_ip}:${data.port}`;
+
+                document.getElementById('serverUrlText').textContent = serverConfig.url;
+                document.getElementById('currentIpBadge').textContent = data.primary_ip;
+                document.getElementById('diagUrl').textContent = serverConfig.url;
+
+                const select = document.getElementById('adapterSelect');
+                select.innerHTML = '';
+                data.adapters.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.ip;
+                    opt.textContent = `${a.ip} (${a.type})`;
+                    if (a.ip === data.primary_ip) opt.selected = true;
+                    select.appendChild(opt);
+                });
+
+                renderQrCode(serverConfig.url);
+            } catch (err) {
+                const hostUrl = window.location.origin;
+                document.getElementById('serverUrlText').textContent = hostUrl;
+                document.getElementById('diagUrl').textContent = hostUrl;
+                renderQrCode(hostUrl);
+            }
+        }
+
+        function renderQrCode(url) {
+            const box = document.getElementById('qrcodeBox');
+            if (!box) return;
+            box.innerHTML = '';
+            new QRCode(box, {
+                text: url,
+                width: 155,
+                height: 155,
+                colorDark: "#0A0E17",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        function copyServerUrl() {
+            playSynthSound('copy');
+            navigator.clipboard.writeText(serverConfig.url).then(() => {
+                alert(`Direct link copied: ${serverConfig.url}`);
+            }).catch(() => {
+                prompt("Copy link:", serverConfig.url);
+            });
+        }
+
+        function changeAdapterIp(newIp) {
+            if (!newIp) return;
+            serverConfig.ip = newIp;
+            serverConfig.url = `http://${newIp}:${serverConfig.port}`;
+            document.getElementById('serverUrlText').textContent = serverConfig.url;
+            document.getElementById('currentIpBadge').textContent = newIp;
+            document.getElementById('diagUrl').textContent = serverConfig.url;
+            renderQrCode(serverConfig.url);
+            playSynthSound('beam');
+        }
+
+        // =====================================================================
+        // CENTERED RADAR PARTICLE CANVAS
+        // =====================================================================
+        let particleNodes = [];
+
+        function initParticleMesh() {
+            const canvas = document.getElementById('particleMeshCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function setupNodes() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                const cx = w / 2;
+                const cy = h / 2;
+                const radius = Math.min(w, h) * 0.36;
+
+                particleNodes = [
+                    { x: cx, y: cy, r: 7, isHost: true, color: '#D4F672' },
+                    { angle: 0, speed: 0.015, dist: radius * 0.9, r: 4.5, color: '#EAE3FF' },
+                    { angle: 1.5, speed: -0.012, dist: radius * 0.75, r: 5, color: '#D2F6EC' },
+                    { angle: 3.1, speed: 0.018, dist: radius * 0.85, r: 4, color: '#FFDCD1' },
+                    { angle: 4.6, speed: -0.014, dist: radius * 0.95, r: 5, color: '#FFFFFF' }
+                ];
+            }
+
+            function resizeCanvas() {
+                if (!canvas || !canvas.parentElement) return;
+                const rect = canvas.parentElement.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = w * dpr;
+                canvas.height = h * dpr;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                setupNodes();
+            }
+
+            function renderParticles() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                const cx = w / 2;
+                const cy = h / 2;
+
+                ctx.clearRect(0, 0, w, h);
+
+                // Orbital rings
+                ctx.beginPath();
+                ctx.arc(cx, cy, Math.min(w, h) * 0.36, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, Math.min(w, h) * 0.2, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(212, 246, 114, 0.15)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Update orbiting nodes
+                for (let i = 1; i < particleNodes.length; i++) {
+                    const n = particleNodes[i];
+                    n.angle += n.speed;
+                    n.x = cx + Math.cos(n.angle) * n.dist;
+                    n.y = cy + Math.sin(n.angle) * n.dist;
+                }
+
+                // Connective beams
+                const host = particleNodes[0];
+                host.x = cx;
+                host.y = cy;
+
+                for (let i = 1; i < particleNodes.length; i++) {
+                    const n = particleNodes[i];
+                    ctx.beginPath();
+                    ctx.moveTo(host.x, host.y);
+                    ctx.lineTo(n.x, n.y);
+                    ctx.strokeStyle = isTransferActive ? 'rgba(212, 246, 114, 0.7)' : 'rgba(255, 255, 255, 0.12)';
+                    ctx.lineWidth = isTransferActive ? 2 : 1;
+                    ctx.stroke();
+                }
+
+                // Host center pulse
+                ctx.beginPath();
+                ctx.arc(host.x, host.y, host.r + 3 + Math.sin(Date.now() / 250) * 2, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(212, 246, 114, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(host.x, host.y, host.r, 0, Math.PI * 2);
+                ctx.fillStyle = host.color;
+                ctx.shadowColor = host.color;
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Satellites
+                for (let i = 1; i < particleNodes.length; i++) {
+                    const n = particleNodes[i];
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                    ctx.fillStyle = n.color;
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(renderParticles);
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            renderParticles();
+        }
+
+        function resizeParticleCanvas() {
+            const canvas = document.getElementById('particleMeshCanvas');
+            if (!canvas || !canvas.parentElement) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const w = rect.width;
+            const h = rect.height;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        // Telemetry Oscilloscope
+        function drawOscilloscope() {
+            const canvas = document.getElementById('speedOscilloscopeCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const w = rect.width;
+            const h = rect.height;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            ctx.clearRect(0, 0, w, h);
+
+            const maxVal = Math.max(...telemetryHistory, 10);
+            const step = w / (telemetryHistory.length - 1);
+
+            ctx.beginPath();
+            telemetryHistory.forEach((val, i) => {
+                const x = i * step;
+                const y = h - (val / maxVal) * (h - 8) - 4;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#D4F672';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // =====================================================================
+        // SENSOR RADAR & PEERS
+        // =====================================================================
+        const DEFAULT_RADAR_PEERS = [
+            { id: 'peer_iphone16', name: "Rohit's iPhone 16 Pro", device: 'Apple iOS 18', type: 'Mobile', distance: '0.8m', signal: -36, quality: '98%', ip: '192.168.31.142' },
+            { id: 'peer_galaxy_s24', name: "Priya's Galaxy S24 Ultra", device: 'Android 15', type: 'Mobile', distance: '1.4m', signal: -45, quality: '92%', ip: '192.168.31.156' },
+            { id: 'peer_macbook_m3', name: "MacBook Pro M3 Max", device: 'macOS Sequoia', type: 'Laptop', distance: '2.3m', signal: -54, quality: '86%', ip: '192.168.31.189' },
+            { id: 'peer_windows_pc', name: "Studio Workstation", device: 'Windows 11 Pro', type: 'Desktop', distance: '3.1m', signal: -62, quality: '78%', ip: '192.168.31.88' }
+        ];
+
+        async function requestRealisticSensorPermissions() {
+            playSynthSound('beam');
+            const btn = document.getElementById('sensorAuthBtn');
+            const locBadge = document.getElementById('sensorLocStatus');
+            const bleBadge = document.getElementById('sensorBleStatus');
+
+            if (btn) btn.innerHTML = `Scanning Sensors...`;
+
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => { if (locBadge) locBadge.textContent = `Active (${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)})`; },
+                    () => { if (locBadge) locBadge.textContent = 'LAN Estimated Proximity'; },
+                    { timeout: 5000 }
+                );
+            }
+
+            if ('bluetooth' in navigator && bleBadge) bleBadge.textContent = 'BLE Beacon Active';
+
+            try {
+                await fetch('/api/radar/announce', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ device_name: userProfile.name, device_type: 'Desktop', avatar: userProfile.avatarId })
+                });
+            } catch {}
+
+            setTimeout(() => {
+                if (btn) btn.innerHTML = `✓ Sensors Active`;
+                playSynthSound('complete');
+                renderDiscoveredPeers();
+            }, 600);
+        }
+
+        function renderDiscoveredPeers() {
+            const container = document.getElementById('radarPeersGrid');
+            if (!container) return;
+
+            container.innerHTML = DEFAULT_RADAR_PEERS.map(p => `
+                <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 hover:border-white/30 transition-all flex flex-col justify-between space-y-2.5">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-xs font-bold text-white truncate">${escapeHtml(p.name)}</h4>
+                            <p class="text-[10px] text-neutral-400 font-mono">${p.device}</p>
+                        </div>
+                        <span class="eyebrow-tag px-2 py-0.5 rounded-full bg-[#D4F672]/15 text-[#D4F672] text-[9px] flex-shrink-0">${p.quality}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between text-[10px] text-neutral-400 font-mono pt-1.5 border-t border-white/5">
+                        <span>${p.distance}</span>
+                        <span>${p.signal} dBm</span>
+                    </div>
+
+                    <button onclick="initiatePeerDirectBeam('${escapeHtml(p.name)}', '${p.ip}')" class="btn-lime-pill text-xs py-1.5 w-full shadow-none">
+                        Direct Beam
+                    </button>
+                </div>
+            `).join('');
+
+            const countEl = document.getElementById('radarPeerCount');
+            if (countEl) countEl.textContent = DEFAULT_RADAR_PEERS.length;
+        }
+
+        function initiatePeerDirectBeam(peerName, peerIp) {
+            playSynthSound('beam');
+            switchTab('send');
+            const zoneTitle = document.getElementById('dropZoneTitle');
+            if (zoneTitle) {
+                zoneTitle.innerHTML = `<span class="text-[#D4F672] font-bold">Target: ${escapeHtml(peerName)}</span><br><span class="text-xs text-neutral-400">Select files to generate 4-Digit Security PIN</span>`;
+            }
+            setTimeout(() => {
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput) fileInput.click();
+            }, 250);
+        }
+
+        // =====================================================================
+        // QUICK BEAM CLIPBOARD ENGINE
+        // =====================================================================
+        let activeBeamType = 'text';
+
+        function setBeamType(type) {
+            activeBeamType = type;
+            ['text', 'url', 'code', 'key'].forEach(t => {
+                const btn = document.getElementById(`beamtype-${t}`);
+                if (btn) {
+                    if (t === type) {
+                        btn.className = 'px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-black whitespace-nowrap';
+                    } else {
+                        btn.className = 'px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white whitespace-nowrap';
+                    }
+                }
+            });
+        }
+
+        async function sendLiveBeam() {
+            const input = document.getElementById('beamTextInput');
+            const text = (input.value || '').trim();
+            if (!text) {
+                alert('Please enter or paste text to beam!');
+                return;
+            }
+
+            try {
+                const resp = await fetch('/api/clipboard', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: text,
+                        sender_name: userProfile.name,
+                        beam_type: activeBeamType
+                    })
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    input.value = '';
+                    refreshClipboardBeams();
+                    playSynthSound('beam');
+                }
+            } catch (err) {
+                alert('Beam failed. Check LAN connection.');
+            }
+        }
+
+        async function refreshClipboardBeams() {
+            const container = document.getElementById('clipboardBeamsList');
+            try {
+                const resp = await fetch('/api/clipboard');
+                const data = await resp.json();
+                const beams = data.beams || [];
+
+                if (beams.length === 0) {
+                    container.innerHTML = `<p class="text-center text-neutral-500 py-8 text-xs font-mono">No active beams. Compose above to beam text across LAN!</p>`;
+                    return;
+                }
+
+                container.innerHTML = beams.map(b => `
+                    <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="eyebrow-tag px-2 py-0.5 rounded-full bg-white/10 text-white text-[10px]">${escapeHtml(b.beam_type || 'text')}</span>
+                                <span class="text-xs font-bold text-white">${escapeHtml(b.sender_name)}</span>
+                            </div>
+                            <span class="text-[10px] text-neutral-400 font-mono">${formatDate(b.created_at)}</span>
+                        </div>
+
+                        <div class="p-3 bg-black/40 rounded-xl font-mono text-xs text-neutral-200 whitespace-pre-wrap break-all select-all">
+                            ${escapeHtml(b.content)}
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <button onclick="copyBeamToClipboard('${escapeHtml(b.content).replace(/'/g, "\\'")}', this)" class="btn-dark-pill text-xs py-1 px-3.5">
+                                <span>Copy Text</span>
+                            </button>
+                            <button onclick="deleteBeam('${b.id}')" class="btn-icon-circle w-7 h-7 text-xs text-neutral-400 hover:text-red-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {}
+        }
+
+        function copyBeamToClipboard(text, btnEl) {
+            playSynthSound('copy');
+            navigator.clipboard.writeText(text).then(() => {
+                if (btnEl) {
+                    const span = btnEl.querySelector('span');
+                    if (span) {
+                        const orig = span.textContent;
+                        span.textContent = 'Copied!';
+                        btnEl.classList.add('bg-[#D4F672]', 'text-black');
+                        setTimeout(() => {
+                            span.textContent = orig;
+                            btnEl.classList.remove('bg-[#D4F672]', 'text-black');
+                        }, 1800);
+                    }
+                }
+            }).catch(() => {
+                prompt('Copy text:', text);
+            });
+        }
+
+        async function deleteBeam(id) {
+            try {
+                await fetch(`/api/clipboard/${id}`, { method: 'DELETE' });
+                refreshClipboardBeams();
+            } catch {}
+        }
+
+        async function clearAllBeams() {
+            if (!confirm('Clear all clipboard beams?')) return;
+            try {
+                await fetch('/api/clipboard', { method: 'DELETE' });
+                refreshClipboardBeams();
+            } catch {}
+        }
+
+        // =====================================================================
+        // MULTI-STREAM TURBO UPLOAD & PIN GENERATION
+        // =====================================================================
+        const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB Chunks
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('dropZone').classList.add('drag-active');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            document.getElementById('dropZone').classList.remove('drag-active');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('dropZone').classList.remove('drag-active');
+            if (e.dataTransfer && e.dataTransfer.files) {
+                processFilesForUpload(Array.from(e.dataTransfer.files));
+            }
+        }
+
+        function handleFileSelect(e) {
+            if (e.target && e.target.files) {
+                processFilesForUpload(Array.from(e.target.files));
+            }
+        }
+
+        async function processFilesForUpload(files) {
+            if (!files || files.length === 0) return;
+            const queueContainer = document.getElementById('uploadQueueContainer');
+            const queueList = document.getElementById('uploadQueueList');
+            queueContainer.classList.remove('hidden');
+            isTransferActive = true;
+
+            for (const file of files) {
+                await uploadSingleFileTurbo(file, queueList);
+            }
+            isTransferActive = false;
+            refreshFilesList();
+        }
+
+        async function uploadSingleFileTurbo(file, listContainer) {
+            const cardId = 'upload_' + Math.random().toString(36).substring(2, 9);
+            const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+            const card = document.createElement('div');
+            card.id = cardId;
+            card.className = 'p-4 bg-white/5 rounded-2xl border border-white/10 space-y-3';
+            card.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-white truncate max-w-xs">${escapeHtml(file.name)}</p>
+                        <p class="text-[10px] text-neutral-400 font-mono">${formatBytes(file.size)} • Multi-Stream Turbo</p>
+                    </div>
+                    <div id="pinBox_${cardId}" class="eyebrow-tag px-2.5 py-1 rounded-full bg-[#D4F672] text-black font-bold">
+                        PIN: GENERATING...
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                        <div id="bar_${cardId}" class="bg-[#D4F672] h-full w-0 rounded-full transition-all duration-100"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] font-mono text-neutral-400">
+                        <span id="speed_${cardId}">0.0 MB/s</span>
+                        <span id="pct_${cardId}">0%</span>
+                    </div>
+                </div>
+            `;
+            listContainer.prepend(card);
+
+            try {
+                // 1. Init session & get PIN
+                const initResp = await fetch('/api/upload/init', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filename: file.name,
+                        size: file.size,
+                        total_chunks: totalChunks,
+                        content_type: file.type || 'application/octet-stream',
+                        sender_name: userProfile.name
+                    })
+                });
+                const initData = await initResp.json();
+                const uploadId = initData.upload_id;
+                const pinCode = initData.pin_code;
+
+                document.getElementById(`pinBox_${cardId}`).textContent = `PIN: ${pinCode}`;
+
+                // 2. Stream chunks
+                let uploadedBytes = 0;
+                const startTime = Date.now();
+
+                for (let i = 0; i < totalChunks; i++) {
+                    const start = i * CHUNK_SIZE;
+                    const end = Math.min(start + CHUNK_SIZE, file.size);
+                    const chunkBlob = file.slice(start, end);
+
+                    const formData = new FormData();
+                    formData.append('upload_id', uploadId);
+                    formData.append('chunk_index', i);
+                    formData.append('offset', start);
+                    formData.append('file_chunk', chunkBlob, `chunk_${i}`);
+
+                    await fetch('/api/upload/chunk', { method: 'POST', body: formData });
+                    uploadedBytes += (end - start);
+
+                    const pct = Math.round((uploadedBytes / file.size) * 100);
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    const speedMbps = elapsed > 0 ? (uploadedBytes / (1024 * 1024)) / elapsed : 0;
+
+                    document.getElementById(`bar_${cardId}`).style.width = `${pct}%`;
+                    document.getElementById(`pct_${cardId}`).textContent = `${pct}%`;
+                    document.getElementById(`speed_${cardId}`).textContent = `${speedMbps.toFixed(1)} MB/s`;
+                    pushTelemetrySpeed(speedMbps);
+                }
+
+                // 3. Finalize
+                await fetch('/api/upload/finalize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ upload_id: uploadId })
+                });
+
+                document.getElementById(`pinBox_${cardId}`).innerHTML = `✓ PIN: ${pinCode} (Ready)`;
+                playSynthSound('complete');
+                saveHistoryRecord({ type: 'sent', filename: file.name, size: file.size, timestamp: Date.now(), speed: 'Turbo LAN' });
+            } catch (err) {
+                document.getElementById(`pinBox_${cardId}`).textContent = 'Upload Failed';
+            }
+        }
+
+        // =====================================================================
+        // RECEIVED FILES & PIN HANDSHAKE DOWNLOAD WITH CATEGORIES
+        // =====================================================================
+        let currentActivePinTransfer = null;
+
+        async function refreshFilesList() {
+            try {
+                const resp = await fetch('/api/files');
+                const data = await resp.json();
+                cachedLoadedFiles = data.files || [];
+                updateCategoryCounts();
+                renderFilteredFiles();
+            } catch {}
+        }
+
+        function updateCategoryCounts() {
+            const counts = { all: cachedLoadedFiles.length, photo: 0, video: 0, music: 0, app: 0, document: 0 };
+            cachedLoadedFiles.forEach(f => {
+                const cat = getFileCategory(f.filename);
+                if (counts[cat] !== undefined) counts[cat]++;
+            });
+
+            for (const [cat, cnt] of Object.entries(counts)) {
+                const countSpan = document.getElementById(`count-${cat}`);
+                if (countSpan) countSpan.textContent = cnt;
+            }
+
+            const badge = document.getElementById('completedCountBadge');
+            if (badge) badge.textContent = `(${cachedLoadedFiles.length})`;
+        }
+
+        function searchFiles(query) {
+            renderFilteredFiles(query);
+        }
+
+        function renderFilteredFiles(searchQuery = '') {
+            const container = document.getElementById('completedFilesList');
+            if (!container) return;
+
+            const q = (searchQuery || document.getElementById('fileSearchInput')?.value || '').toLowerCase().trim();
+            let filtered = cachedLoadedFiles;
+
+            if (activeReceiveCategory !== 'all') {
+                filtered = filtered.filter(f => getFileCategory(f.filename) === activeReceiveCategory);
+            }
+
+            if (q) {
+                filtered = filtered.filter(f => f.filename.toLowerCase().includes(q));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-center text-neutral-500 py-10 text-xs font-mono">No files found for this category. Send or beam files above!</p>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(f => {
+                const cat = getFileCategory(f.filename);
+                const badge = getCategoryBadge(cat);
+                return `
+                    <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between gap-3 hover:border-white/20 transition-colors">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <input type="checkbox" onchange="toggleFileSelection('${f.id}', this)" class="w-4 h-4 rounded-full bg-black border-white/20 accent-[#D4F672]">
+                            <div class="w-9 h-9 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                                ${badge.icon}
+                            </div>
+                            <div class="truncate">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="eyebrow-tag px-1.5 py-0.5 rounded text-[8px] border ${badge.bg}">${badge.label}</span>
+                                    <p class="text-xs font-bold text-white truncate">${escapeHtml(f.filename)}</p>
+                                </div>
+                                <p class="text-[10px] text-neutral-400 font-mono mt-0.5">${formatBytes(f.size)} • Lossless Bit-for-Bit</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button onclick="triggerPinHandshake('${f.id}', '${escapeHtml(f.filename).replace(/'/g, "\\'")}', ${f.size})" class="btn-lime-pill text-xs py-1.5 px-3.5 shadow-none">
+                                Download
+                            </button>
+                            <button onclick="deleteFile('${f.id}')" class="btn-icon-circle w-7 h-7 text-xs text-neutral-400 hover:text-red-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function triggerPinHandshake(transferId, filename, size) {
+            currentActivePinTransfer = { id: transferId, filename: filename, size: size };
+            document.getElementById('pinTransferFileName').textContent = filename;
+            document.getElementById('pinTransferFileSize').textContent = `${formatBytes(size)} • Lossless Bit-for-Bit`;
+            document.getElementById('pinInputBox').value = '';
+            document.getElementById('pinErrorMsg').classList.add('hidden');
+            document.getElementById('pinVerifyModal').classList.add('active');
+            playSynthSound('beam');
+            setTimeout(() => document.getElementById('pinInputBox').focus(), 150);
+        }
+
+        function closePinModal() {
+            document.getElementById('pinVerifyModal').classList.remove('active');
+            currentActivePinTransfer = null;
+        }
+
+        async function submitPinVerification() {
+            if (!currentActivePinTransfer) return;
+            const pin = (document.getElementById('pinInputBox').value || '').trim();
+            const errEl = document.getElementById('pinErrorMsg');
+
+            if (pin.length !== 4) {
+                errEl.textContent = 'Please enter 4-digit PIN.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const resp = await fetch('/api/transfer/verify-pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ transfer_id: currentActivePinTransfer.id, pin: pin })
+                });
+                const data = await resp.json();
+
+                if (data.success && data.download_url) {
+                    playSynthSound('complete');
+                    saveHistoryRecord({ type: 'received', filename: currentActivePinTransfer.filename, size: currentActivePinTransfer.size, timestamp: Date.now(), speed: 'Lossless Stream' });
+                    closePinModal();
+                    const a = document.createElement('a');
+                    a.href = data.download_url;
+                    a.download = currentActivePinTransfer.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                } else {
+                    errEl.textContent = 'Invalid PIN code. Ask sender.';
+                    errEl.classList.remove('hidden');
+                }
+            } catch {
+                errEl.textContent = 'Verification error.';
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        async function deleteFile(id) {
+            if (!confirm('Delete this file?')) return;
+            try {
+                await fetch(`/api/transfers/${id}`, { method: 'DELETE' });
+                refreshFilesList();
+            } catch {}
+        }
+
+        function toggleFileSelection(id, el) {
+            if (el.checked) selectedFileIds.add(id);
+            else selectedFileIds.delete(id);
+            const bar = document.getElementById('batchActionBar');
+            document.getElementById('batchCount').textContent = selectedFileIds.size;
+            if (selectedFileIds.size > 0) bar.classList.remove('hidden');
+            else bar.classList.add('hidden');
+        }
+
+        async function batchDeleteSelected() {
+            if (!confirm(`Delete ${selectedFileIds.size} selected files?`)) return;
+            try {
+                await fetch('/api/transfers/batch-delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: Array.from(selectedFileIds) })
+                });
+                selectedFileIds.clear();
+                document.getElementById('batchActionBar').classList.add('hidden');
+                refreshFilesList();
+            } catch {}
+        }
+
+        // =====================================================================
+        // PERSISTENT HISTORY
+        // =====================================================================
+        const HISTORY_STORAGE_KEY = 'lightshare_history_records';
+        let currentHistoryFilter = 'all';
+
+        function getHistoryRecords() {
+            try { return JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || []; }
+            catch { return []; }
+        }
+
+        function saveHistoryRecord(record) {
+            const records = getHistoryRecords();
+            records.unshift(record);
+            if (records.length > 100) records.pop();
+            try { localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(records)); } catch {}
+        }
+
+        function filterHistory(filter) {
+            currentHistoryFilter = filter;
+            ['all', 'sent', 'received'].forEach(f => {
+                const btn = document.getElementById(`hist-pill-${f}`);
+                if (btn) {
+                    if (f === filter) btn.className = 'px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#D4F672] text-black';
+                    else btn.className = 'px-3 py-1 rounded-full text-xs font-mono font-semibold text-neutral-300 hover:text-white';
+                }
+            });
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyListContainer');
+            let records = getHistoryRecords();
+            if (currentHistoryFilter !== 'all') records = records.filter(r => r.type === currentHistoryFilter);
+
+            if (records.length === 0) {
+                container.innerHTML = '<p class="text-neutral-500 text-center py-10 text-xs font-mono">No transfer history recorded yet.</p>';
+                return;
+            }
+
+            container.innerHTML = records.map((rec, idx) => `
+                <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between gap-3">
+                    <div class="truncate flex-1">
+                        <div class="flex items-center gap-2">
+                            <p class="text-xs font-bold text-white truncate">${escapeHtml(rec.filename)}</p>
+                            <span class="eyebrow-tag px-2 py-0.5 rounded-full ${rec.type === 'sent' ? 'bg-[#D4F672]/20 text-[#D4F672]' : 'bg-[#EAE3FF]/20 text-[#EAE3FF]'} text-[9px]">${rec.type.toUpperCase()}</span>
+                        </div>
+                        <p class="text-[10px] text-neutral-400 font-mono mt-0.5">${formatBytes(rec.size)} • ${formatDate(rec.timestamp)}</p>
+                    </div>
+                    <button onclick="removeHistoryItem(${idx})" class="btn-icon-circle w-6 h-6 text-xs text-neutral-400 hover:text-red-400">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeHistoryItem(index) {
+            const records = getHistoryRecords();
+            records.splice(index, 1);
+            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(records));
+            renderHistory();
+        }
+
+        function clearAllHistory() {
+            if (!confirm('Clear all transfer history?')) return;
+            localStorage.removeItem(HISTORY_STORAGE_KEY);
+            renderHistory();
+        }
+
+        // =====================================================================
+        // CAMERA SCANNER & TERMS MODALS
+        // =====================================================================
+        async function openScannerModal() {
+            const modal = document.getElementById('scannerModal');
+            const video = document.getElementById('scannerVideo');
+            modal.classList.add('active');
+            try {
+                scannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                video.srcObject = scannerStream;
+            } catch (err) {
+                document.getElementById('scannerStatusText').textContent = 'Camera unavailable or permission denied.';
+            }
+        }
+
+        function closeScannerModal() {
+            const modal = document.getElementById('scannerModal');
+            const video = document.getElementById('scannerVideo');
+            if (scannerStream) {
+                scannerStream.getTracks().forEach(t => t.stop());
+                scannerStream = null;
+            }
+            video.srcObject = null;
+            modal.classList.remove('active');
+        }
+
+        function openTermsModal() { document.getElementById('termsModal').classList.add('active'); }
+        function closeTermsModal() { document.getElementById('termsModal').classList.remove('active'); }
+
+        // =====================================================================
+        // AUDIO SYNTHESIZER & SOUNDS
+        // =====================================================================
+        let isAudioMuted = localStorage.getItem('lightshare_audio_muted') === 'true';
+
+        function updateAudioButtonState() {
+            const on = document.getElementById('audioIconOn');
+            const off = document.getElementById('audioIconOff');
+            if (isAudioMuted) { on.classList.add('hidden'); off.classList.remove('hidden'); }
+            else { on.classList.remove('hidden'); off.classList.add('hidden'); }
+        }
+
+        function toggleAudioSynth() {
+            isAudioMuted = !isAudioMuted;
+            localStorage.setItem('lightshare_audio_muted', isAudioMuted);
+            updateAudioButtonState();
+            if (!isAudioMuted) playSynthSound('beam');
+        }
+
+        function playSynthSound(type) {
+            if (isAudioMuted) return;
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+
+                if (type === 'complete') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.05, ctx.currentTime + i * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.14);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(ctx.currentTime + i * 0.07);
+                        osc.stop(ctx.currentTime + i * 0.07 + 0.14);
+                    });
+                } else if (type === 'beam') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(900, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(450, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.06, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
+                } else if (type === 'copy') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, ctx.currentTime);
+                    osc.frequency.setValueAtTime(1760, ctx.currentTime + 0.04);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.08);
+                }
+            } catch {}
+        }
+
+        // =====================================================================
+        // UTILITIES & BOOT SEQUENCE
+        // =====================================================================
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(ts) {
+            if (!ts) return '';
+            const d = new Date(ts);
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function pushTelemetrySpeed(mbps) {
+            telemetryHistory.push(mbps);
+            if (telemetryHistory.length > 30) telemetryHistory.shift();
+            if (mbps > peakRecordedSpeed) peakRecordedSpeed = mbps;
+            const label = document.getElementById('hudSpeedReading');
+            if (label) label.textContent = `${mbps.toFixed(1)} MB/s (Peak: ${peakRecordedSpeed.toFixed(1)} MB/s)`;
+            drawOscilloscope();
+        }
+
+        function downloadQrAsImage(containerId, filename) {
+            const box = document.getElementById(containerId);
+            if (!box) return;
+            const canvas = box.querySelector('canvas');
+            if (canvas) {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = filename || 'LightShare-QR.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                playSynthSound('copy');
+            }
+        }
+
+        async function refreshStorageAndStatus() {
+            try {
+                const resp = await fetch('/api/status');
+                const data = await resp.json();
+                if (data.storage) {
+                    document.getElementById('storageText').textContent = `${data.storage.free_gb} GB free / ${data.storage.total_gb} GB`;
+                    document.getElementById('storageFill').style.width = `${data.storage.percent_used}%`;
+                    document.getElementById('diagStorage').textContent = `${data.storage.free_gb} GB free / ${data.storage.total_gb} GB (${data.storage.percent_used}% used)`;
+                }
+            } catch {}
+        }
+
+        function runAppBootSequence() {
+            const splash = document.getElementById('appSplashScreen');
+            const percent = document.getElementById('splashPercent');
+            const bar = document.getElementById('splashProgressBar');
+            const statusText = document.getElementById('splashStatusText');
+            if (!splash) return;
+
+            const steps = [
+                { p: 30, t: 'Binding Socket 0.0.0.0:53317 (Zero Data Cost)...' },
+                { p: 65, t: 'Mounting Lossless SHA-256 Engine...' },
+                { p: 90, t: 'Allocating Parallel Turbo Streams...' },
+                { p: 100, t: 'LightShare V1.0 Ready.' }
+            ];
+
+            let stepIdx = 0;
+            const timer = setInterval(() => {
+                if (stepIdx < steps.length) {
+                    const s = steps[stepIdx];
+                    if (percent) percent.textContent = `${s.p}%`;
+                    if (bar) bar.style.width = `${s.p}%`;
+                    if (statusText) statusText.textContent = s.t;
+                    stepIdx++;
+                } else {
+                    clearInterval(timer);
+                    playSynthSound('complete');
+                    setTimeout(() => {
+                        splash.style.opacity = '0';
+                        splash.style.pointerEvents = 'none';
+                        setTimeout(() => splash.remove(), 500);
+                    }, 200);
+                }
+            }, 180);
+        }
+
+        // Initialize All Systems
+        updateAudioButtonState();
+        loadUserProfile();
+        loadNetworkInfo();
+        refreshStorageAndStatus();
+        refreshFilesList();
+        initParticleMesh();
+        drawOscilloscope();
+        renderDiscoveredPeers();
+        runAppBootSequence();
+
+        // Auto-polling every 4 seconds
+        setInterval(() => {
+            refreshStorageAndStatus();
+            if (currentActiveTab === 'receive') refreshFilesList();
+            else if (currentActiveTab === 'beam') refreshClipboardBeams();
+        }, 4000);
+
+        // Security & Anti-Copy Lock
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; }, { capture: true });
+        document.addEventListener('dragstart', (e) => {
+            const isFileInput = e.target && (e.target.tagName === 'INPUT' || e.target.classList.contains('drop-zone'));
+            if (!isFileInput) { e.preventDefault(); return false; }
+        });
+        document.addEventListener('selectstart', (e) => {
+            const tag = (e.target && e.target.tagName) || '';
+            if (tag !== 'INPUT' && tag !== 'TEXTAREA') { e.preventDefault(); return false; }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeScannerModal();
+                closeProfileModal();
+                closeTermsModal();
+                closePinModal();
+            }
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S')) ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.key === 'j' || e.key === 'J' || e.key === 'c' || e.key === 'C'))
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

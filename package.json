@@ -1,0 +1,94 @@
+{
+  "name": "lightshare",
+  "version": "1.0.0",
+  "description": "LightShare V1.0 - High-Speed 30GB+ Local & Hotspot File Transfer App",
+  "main": "electron-main.js",
+  "author": "Tanmaya Mahapatra (Retired AME)",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:all": "electron-builder -wml",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "build:mac": "electron-builder --mac --arm64",
+    "cap:sync": "cap sync",
+    "cap:android": "cap add android && cap sync android",
+    "cap:ios": "cap add ios && cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.lightshare.transfer.app",
+    "productName": "LightShare",
+    "copyright": "Copyright © 2026 LightShare",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron-main.js",
+      "app/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "msi",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "LightShare-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "LightShare"
+    },
+    "msi": {
+      "oneClick": false,
+      "shortcutName": "LightShare"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["arm64"]
+        }
+      ],
+      "category": "public.app-category.utilities",
+      "artifactName": "LightShare-AppleSilicon.${ext}"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "AppImage",
+        "snap"
+      ],
+      "category": "Utility",
+      "artifactName": "LightShare-Linux-${arch}.${ext}"
+    }
+  }
+}

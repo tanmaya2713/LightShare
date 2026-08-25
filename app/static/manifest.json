@@ -1,0 +1,26 @@
+{
+  "name": "LightShare V1.0",
+  "short_name": "LightShare",
+  "description": "Ultra-fast local Wi-Fi and Hotspot cross-platform file transfer without internet or data usage.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060813",
+  "theme_color": "#00f0ff",
+  "scope": "/",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
