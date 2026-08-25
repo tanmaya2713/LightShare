@@ -53,7 +53,7 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "app/static/favicon.ico",
+      "icon": "app/static/icon.ico",
       "artifactName": "LightShare-Windows-${target}-${arch}.${ext}"
     },
     "nsis": {
