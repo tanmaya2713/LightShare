@@ -143,7 +143,7 @@ jobs:
   # 4. MACOS APPLE SILICON BUILD (.dmg & .zip)
   # =========================================================================
   build-macos:
-    name: macOS (Apple Silicon .dmg)
+    name: macOS (Universal & Apple Silicon)
     runs-on: macos-latest
     steps:
       - name: Checkout Code
@@ -157,8 +157,8 @@ jobs:
       - name: Install Node Dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Build macOS Apple Silicon (.dmg & .zip)
-        run: npx electron-builder --mac dmg zip --arm64 --publish never
+      - name: Build macOS Universal & Apple Silicon (.dmg & .zip)
+        run: npx electron-builder --mac dmg zip --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

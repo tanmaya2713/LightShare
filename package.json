@@ -46,11 +46,11 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": ["x64", "ia32", "arm64"]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": ["x64", "ia32"]
         }
       ],
       "icon": "app/static/icon.ico",
@@ -67,21 +67,30 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["arm64"]
+          "arch": ["arm64", "x64", "universal"]
         },
         {
           "target": "zip",
-          "arch": ["arm64"]
+          "arch": ["arm64", "x64", "universal"]
         }
       ],
       "category": "public.app-category.utilities",
-      "artifactName": "LightShare-AppleSilicon.${ext}"
+      "artifactName": "LightShare-macOS-${arch}.${ext}"
     },
     "linux": {
       "target": [
-        "deb",
-        "rpm",
-        "AppImage"
+        {
+          "target": "deb",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        }
       ],
       "maintainer": "Tanmaya Mahapatra <dronalabs.support@gmail.com>",
       "category": "Utility",
