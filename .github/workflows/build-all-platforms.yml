@@ -172,13 +172,13 @@ jobs:
             dist/*.zip
 
   # =========================================================================
-  # 5. AUTOMATED GITHUB RELEASE PUBLISHER (Triggered on Tags & Dispatch)
+  # 5. AUTOMATIC GITHUB RELEASE PUBLISHER (Triggered Automatically on 100% Green Builds!)
   # =========================================================================
   publish-release:
     name: Publish GitHub Release
     needs: [build-windows, build-android, build-linux, build-macos]
     runs-on: ubuntu-latest
-    if: always() && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch')
+    if: success()
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -211,20 +211,33 @@ jobs:
           name: LightShare-macOS-Binaries
           path: release-assets/mac
 
-      - name: Create GitHub Release
+      - name: Create or Update Automatic GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name || 'v1.0.0' }}
-          name: "LightShare V1.0 - Universal Cross-Platform Release"
+          tag_name: "v1.0.0"
+          name: "LightShare V1.0 - Official Universal Release"
+          prerelease: false
+          draft: false
+          make_latest: true
           body: |
-            ## 🚀 LightShare V1.0 Universal Release
-            High-speed 30GB+ file transfers over local Wi-Fi and Hotspot with 0 data usage.
+            # 🚀 LightShare V1.0 - Universal Multi-Platform App & SaaS
             
-            ### 📦 Download Formats Available:
-            - **Windows**: `LightShare-Setup.exe` (NSIS) & `LightShare-Setup.msi`
-            - **Android**: `LightShare.apk`
-            - **macOS (Apple Silicon)**: `LightShare-AppleSilicon.dmg`
-            - **Linux**: `.deb` (Debian/Ubuntu), `.rpm` (Fedora/RHEL), and `.AppImage`
+            Ultra-modern, high-speed **30GB+ file transfers** over local Wi-Fi and Personal Hotspot with **0 Internet Data Usage**.
+            
+            ---
+            
+            ### 📦 Download Packages:
+            - **📱 Android**: `LightShare-Debug.apk` & `LightShare-Release.apk` (All architectures: arm64-v8a, armeabi-v7a, x86_64, x86)
+            - **💻 Windows**: `LightShare-Setup-x64.exe`, `LightShare-Setup-ia32.exe`, `LightShare-Setup-arm64.exe` & Portable `.exe`
+            - **🍏 macOS**: `LightShare-macOS-universal.dmg`, `LightShare-macOS-arm64.dmg` (Apple Silicon & Intel)
+            - **🐧 Linux**: `.deb` (Ubuntu/Debian), `.rpm` (Fedora/RHEL), and `.AppImage` (Universal portable)
+            
+            ---
+            
+            ### 👨‍💻 Developer & Support:
+            - **Lead Developer**: Tanmaya Mahapatra (Retired AME)
+            - **Support**: `dronalabs.support@gmail.com`
+            - **Package ID**: `com.lightshare.transfer.app`
           files: |
             release-assets/**/*
         env:
