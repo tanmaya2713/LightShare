@@ -5,6 +5,7 @@ An ultra-modern, high-speed file transfer application engineered for **30GB+ tra
 - **App Package ID**: `com.lightshare.transfer.app`
 - **Version**: `V1.0` (`1.0.0`)
 - **Lead Developer**: Tanmaya Mahapatra (Alias: Retired AME)
+- **Support & Contact**: `dronalabs.support@gmail.com`
 - **Distribution**: Codester Digital Marketplace Edition
 
 ---

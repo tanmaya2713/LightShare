@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "LightShare V1.0 - High-Speed 30GB+ Local & Hotspot File Transfer App",
   "main": "electron-main.js",
-  "author": "Tanmaya Mahapatra (Retired AME) <tanmayamahapatra27@gmail.com>",
+  "author": "Tanmaya Mahapatra (Retired AME) <dronalabs.support@gmail.com>",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
@@ -83,7 +83,7 @@
         "rpm",
         "AppImage"
       ],
-      "maintainer": "Tanmaya Mahapatra <tanmayamahapatra27@gmail.com>",
+      "maintainer": "Tanmaya Mahapatra <dronalabs.support@gmail.com>",
       "category": "Utility",
       "artifactName": "LightShare-Linux-${arch}.${ext}"
     }
