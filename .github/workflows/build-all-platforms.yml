@@ -38,7 +38,7 @@ jobs:
       - name: Install Node Dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Build Windows Installers (NSIS EXE & MSI)
+      - name: Build Windows Installers (NSIS EXE & Portable)
         run: npx electron-builder --win --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,7 +50,6 @@ jobs:
           if-no-files-found: warn
           path: |
             dist/*.exe
-            dist/*.msi
 
   # =========================================================================
   # 2. ANDROID MOBILE BUILD (.apk)

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "LightShare V1.0 - High-Speed 30GB+ Local & Hotspot File Transfer App",
   "main": "electron-main.js",
-  "author": "Tanmaya Mahapatra (Retired AME)",
+  "author": "Tanmaya Mahapatra (Retired AME) <tanmayamahapatra27@gmail.com>",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
@@ -29,13 +29,17 @@
   "build": {
     "appId": "com.lightshare.transfer.app",
     "productName": "LightShare",
-    "copyright": "Copyright © 2026 LightShare",
+    "copyright": "Copyright © 2026 Tanmaya Mahapatra (Retired AME)",
+    "compression": "maximum",
     "directories": {
       "output": "dist"
     },
     "files": [
       "electron-main.js",
-      "app/**/*",
+      "app/main.py",
+      "app/config.py",
+      "app/database/**/*",
+      "app/static/**/*",
       "package.json"
     ],
     "win": {
@@ -45,25 +49,18 @@
           "arch": ["x64"]
         },
         {
-          "target": "msi",
-          "arch": ["x64"]
-        },
-        {
           "target": "portable",
           "arch": ["x64"]
         }
       ],
-      "artifactName": "LightShare-Setup.${ext}"
+      "icon": "app/static/favicon.ico",
+      "artifactName": "LightShare-Windows-${target}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "LightShare"
-    },
-    "msi": {
-      "oneClick": false,
       "shortcutName": "LightShare"
     },
     "mac": {
@@ -84,9 +81,9 @@
       "target": [
         "deb",
         "rpm",
-        "AppImage",
-        "snap"
+        "AppImage"
       ],
+      "maintainer": "Tanmaya Mahapatra <tanmayamahapatra27@gmail.com>",
       "category": "Utility",
       "artifactName": "LightShare-Linux-${arch}.${ext}"
     }
