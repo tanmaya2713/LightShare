@@ -54,14 +54,18 @@
         }
       ],
       "icon": "app/static/icon.ico",
-      "artifactName": "LightShare-Windows-${target}-${arch}.${ext}"
+      "artifactName": "LightShare-Windows-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "LightShare"
+      "shortcutName": "LightShare",
+      "artifactName": "LightShare-Setup-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "LightShare-Portable-${arch}.${ext}"
     },
     "mac": {
       "target": [
