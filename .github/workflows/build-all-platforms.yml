@@ -83,18 +83,22 @@ jobs:
           npx cap add android || true
           npx cap sync android
 
-      - name: Build Android APK via Gradle
+      - name: Build Android Debug & Release APKs
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug || ./gradlew assemble
+          ./gradlew assembleDebug assembleRelease
+          mkdir -p ../dist-apk
+          find app/build/outputs/apk/debug -name "*.apk" -exec cp {} ../dist-apk/LightShare-Debug.apk \;
+          find app/build/outputs/apk/release -name "*.apk" -exec cp {} ../dist-apk/LightShare-Release.apk \;
 
-      - name: Upload Android APK Artifacts
+      - name: Upload Android APK Artifacts (Debug & Release)
         uses: actions/upload-artifact@v4
         with:
-          name: LightShare-Android-APK
+          name: LightShare-Android-APKs
           if-no-files-found: warn
           path: |
+            dist-apk/*.apk
             android/app/build/outputs/apk/**/*.apk
 
   # =========================================================================
@@ -190,7 +194,7 @@ jobs:
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
-          name: LightShare-Android-APK
+          name: LightShare-Android-APKs
           path: release-assets/android
 
       - name: Download Linux Artifacts
