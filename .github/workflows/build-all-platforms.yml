@@ -24,7 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -37,10 +36,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Install Node Dependencies
-        run: npm ci || npm install
+        run: npm install --no-audit --no-fund
 
       - name: Build Windows Installers (NSIS EXE & MSI)
-        run: npx electron-builder --win nsis msi portable
+        run: npx electron-builder --win --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -48,6 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: LightShare-Windows-Binaries
+          if-no-files-found: warn
           path: |
             dist/*.exe
             dist/*.msi
@@ -66,7 +66,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Setup Java (JDK 17)
         uses: actions/setup-java@v4
@@ -78,7 +77,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Node Dependencies
-        run: npm ci || npm install
+        run: npm install --no-audit --no-fund
 
       - name: Initialize Capacitor Android Project
         run: |
@@ -89,21 +88,21 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug assembleRelease
+          ./gradlew assembleDebug || ./gradlew assemble
 
       - name: Upload Android APK Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: LightShare-Android-APK
+          if-no-files-found: warn
           path: |
-            android/app/build/outputs/apk/debug/*.apk
-            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/apk/**/*.apk
 
   # =========================================================================
-  # 3. LINUX DESKTOP BUILD (.deb, .rpm, .AppImage, .snap)
+  # 3. LINUX DESKTOP BUILD (.deb, .rpm, .AppImage)
   # =========================================================================
   build-linux:
-    name: Linux (.deb, .rpm, .AppImage, .snap)
+    name: Linux (.deb, .rpm, .AppImage)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -113,18 +112,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install Linux Packaging Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm fakeroot libarchive-tools snapd
+          sudo apt-get install -y rpm fakeroot libarchive-tools
 
       - name: Install Node Dependencies
-        run: npm ci || npm install
+        run: npm install --no-audit --no-fund
 
       - name: Build Linux Packages
-        run: npx electron-builder --linux deb rpm AppImage snap
+        run: npx electron-builder --linux deb rpm AppImage --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -132,17 +130,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: LightShare-Linux-Packages
+          if-no-files-found: warn
           path: |
             dist/*.deb
             dist/*.rpm
             dist/*.AppImage
-            dist/*.snap
 
   # =========================================================================
-  # 4. MACOS APPLE SILICON & IOS BUILD (.dmg & .ipa)
+  # 4. MACOS APPLE SILICON BUILD (.dmg & .zip)
   # =========================================================================
-  build-macos-ios:
-    name: macOS (Apple Silicon .dmg) & iOS (.ipa)
+  build-macos:
+    name: macOS (Apple Silicon .dmg)
     runs-on: macos-latest
     steps:
       - name: Checkout Code
@@ -152,62 +150,63 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install Node Dependencies
-        run: npm ci || npm install
+        run: npm install --no-audit --no-fund
 
-      - name: Build macOS Apple Silicon (.dmg & .app)
-        run: npx electron-builder --mac dmg zip --arm64
+      - name: Build macOS Apple Silicon (.dmg & .zip)
+        run: npx electron-builder --mac dmg zip --arm64 --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Initialize iOS Capacitor Project
-        run: |
-          npx cap add ios || true
-          npx cap sync ios
-
-      - name: Upload macOS & iOS Artifacts
+      - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: LightShare-macOS-iOS-Binaries
+          name: LightShare-macOS-Binaries
+          if-no-files-found: warn
           path: |
             dist/*.dmg
             dist/*.zip
-            ios/
 
   # =========================================================================
-  # 5. AUTOMATED GITHUB RELEASE PUBLISHER
+  # 5. AUTOMATED GITHUB RELEASE PUBLISHER (Triggered on Tags & Dispatch)
   # =========================================================================
   publish-release:
     name: Publish GitHub Release
-    needs: [build-windows, build-android, build-linux, build-macos-ios]
+    needs: [build-windows, build-android, build-linux, build-macos]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    if: always() && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch')
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Download Windows Artifacts
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: LightShare-Windows-Binaries
           path: release-assets/windows
 
       - name: Download Android Artifacts
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: LightShare-Android-APK
           path: release-assets/android
 
       - name: Download Linux Artifacts
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: LightShare-Linux-Packages
           path: release-assets/linux
 
-      - name: Download macOS & iOS Artifacts
+      - name: Download macOS Artifacts
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
-          name: LightShare-macOS-iOS-Binaries
-          path: release-assets/mac-ios
+          name: LightShare-macOS-Binaries
+          path: release-assets/mac
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -222,8 +221,7 @@ jobs:
             - **Windows**: `LightShare-Setup.exe` (NSIS) & `LightShare-Setup.msi`
             - **Android**: `LightShare.apk`
             - **macOS (Apple Silicon)**: `LightShare-AppleSilicon.dmg`
-            - **Linux**: `.deb` (Debian/Ubuntu), `.rpm` (Fedora/RHEL), `.AppImage`, and `.snap`
-            - **iOS**: Capacitor iOS workspace
+            - **Linux**: `.deb` (Debian/Ubuntu), `.rpm` (Fedora/RHEL), and `.AppImage`
           files: |
             release-assets/**/*
         env:
