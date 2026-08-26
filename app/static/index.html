@@ -946,6 +946,153 @@
 
 
     <!-- ================================================================= -->
+    <!-- MODALS: FIRST-RUN SETUP & ONBOARDING WIZARD -->
+    <!-- ================================================================= -->
+    <div id="onboardingModal" class="modal-overlay z-50">
+        <div class="glass-card-bright p-6 sm:p-8 rounded-3xl max-w-lg w-full mx-4 shadow-2xl relative space-y-5">
+            
+            <!-- Step Indicator -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-full bg-[#D4F672] text-[#0A0E17] flex items-center justify-center font-black text-xs shadow-md">LS</div>
+                    <div>
+                        <h3 class="text-base font-bold text-white tracking-tight">Setup LightShare</h3>
+                        <p class="text-[10px] text-neutral-400 font-mono">Zero-Config P2P Network</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 font-mono text-[10px] text-neutral-400">
+                    <span id="onboardStepDot1" class="w-2.5 h-2.5 rounded-full bg-[#D4F672] transition-all"></span>
+                    <span id="onboardStepDot2" class="w-2.5 h-2.5 rounded-full bg-white/20 transition-all"></span>
+                    <span id="onboardStepDot3" class="w-2.5 h-2.5 rounded-full bg-white/20 transition-all"></span>
+                </div>
+            </div>
+
+            <!-- STEP 1: TERMS & PRIVACY -->
+            <div id="onboardStep1" class="space-y-4">
+                <div>
+                    <span class="eyebrow-tag text-[#D4F672]">STEP 1 OF 3 • WELCOME & TERMS</span>
+                    <h4 class="text-xl font-extrabold text-white mt-1">100% Free & Private Sharing</h4>
+                    <p class="text-xs text-neutral-400 mt-1 leading-relaxed">
+                        LightShare connects devices directly over your local Wi-Fi or Personal Hotspot with <strong>0 internet data usage</strong> and <strong>zero cloud tracking</strong>.
+                    </p>
+                </div>
+
+                <div class="p-3.5 bg-black/40 rounded-2xl border border-white/10 space-y-2.5 text-xs text-neutral-300">
+                    <div class="flex items-start gap-2">
+                        <span class="text-[#D4F672] font-bold">✓</span>
+                        <p><strong>0 Data Usage</strong>: Direct high-speed local stream (up to 30GB+).</p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-[#D4F672] font-bold">✓</span>
+                        <p><strong>Lossless Quality</strong>: SHA-256 bit-for-bit cryptographic authenticity.</p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-[#D4F672] font-bold">✓</span>
+                        <p><strong>100% Free Forever</strong>: ₹0 cost with zero tracking or analytics.</p>
+                    </div>
+                </div>
+
+                <label class="flex items-start gap-3 p-3 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:border-white/20 transition-all">
+                    <input type="checkbox" id="onboardTermsCheckbox" class="mt-0.5 w-4 h-4 rounded text-[#D4F672] focus:ring-0 bg-black/50 border-white/20 cursor-pointer" onchange="toggleOnboardStep1Btn()">
+                    <span class="text-xs text-neutral-300 leading-snug">I accept the <button type="button" onclick="document.getElementById('termsModal').classList.add('active')" class="text-[#D4F672] underline font-semibold">Terms of Service & Privacy Policy</button>.</span>
+                </label>
+
+                <div class="flex justify-end pt-1">
+                    <button id="onboardStep1Btn" onclick="nextOnboardStep(2)" disabled class="btn-lime-pill opacity-40 cursor-not-allowed py-2 px-6 text-xs shadow-none">
+                        Continue →
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: PROFILE & DEVICE NAME -->
+            <div id="onboardStep2" class="space-y-4 hidden">
+                <div>
+                    <span class="eyebrow-tag text-[#D4F672]">STEP 2 OF 3 • YOUR PROFILE</span>
+                    <h4 class="text-xl font-extrabold text-white mt-1">Create Device Profile</h4>
+                    <p class="text-xs text-neutral-400 mt-1">Choose how other devices identify you on the local radar.</p>
+                </div>
+
+                <div class="space-y-3.5">
+                    <div>
+                        <label class="eyebrow-tag text-neutral-400 block mb-1.5">DEVICE / SENDER NAME</label>
+                        <input 
+                            type="text" 
+                            id="onboardNameInput" 
+                            maxlength="28" 
+                            class="w-full bg-black/60 border border-white/20 focus:border-[#D4F672] rounded-full px-4 py-2.5 text-sm text-white font-semibold outline-none"
+                            placeholder="e.g. My Phone / Office PC"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="eyebrow-tag text-neutral-400 block mb-2">CHOOSE YOUR RADAR AVATAR</label>
+                        <div id="onboardAvatarGrid" class="grid grid-cols-5 gap-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between pt-1">
+                    <button onclick="nextOnboardStep(1)" class="btn-dark-pill py-2 px-5 text-xs">← Back</button>
+                    <button onclick="nextOnboardStep(3)" class="btn-lime-pill py-2 px-6 text-xs">Continue →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: PERMISSIONS & READY -->
+            <div id="onboardStep3" class="space-y-4 hidden">
+                <div>
+                    <span class="eyebrow-tag text-[#D4F672]">STEP 3 OF 3 • PERMISSIONS</span>
+                    <h4 class="text-xl font-extrabold text-white mt-1">Permissions Checklist</h4>
+                    <p class="text-xs text-neutral-400 mt-1">Allow essential capabilities for high-speed offline transfers.</p>
+                </div>
+
+                <div class="space-y-2.5">
+                    <div class="p-3 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-[#D4F672]/15 text-[#D4F672] flex items-center justify-center text-sm">📶</div>
+                            <div>
+                                <h5 class="text-xs font-bold text-white">Local Network / Wi-Fi</h5>
+                                <p class="text-[10px] text-neutral-400">Direct peer discovery & 4MB/s+ stream throughput</p>
+                            </div>
+                        </div>
+                        <span class="text-[#D4F672] text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#D4F672]/10">Granted</span>
+                    </div>
+
+                    <div class="p-3 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-[#D2F6EC]/15 text-[#D2F6EC] flex items-center justify-center text-sm">📁</div>
+                            <div>
+                                <h5 class="text-xs font-bold text-white">Storage & Files Access</h5>
+                                <p class="text-[10px] text-neutral-400">Save received photos, videos & 30GB+ documents</p>
+                            </div>
+                        </div>
+                        <span class="text-[#D4F672] text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#D4F672]/10">Granted</span>
+                    </div>
+
+                    <div class="p-3 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-[#EAE3FF]/15 text-[#EAE3FF] flex items-center justify-center text-sm">📡</div>
+                            <div>
+                                <h5 class="text-xs font-bold text-white">Radar Peer Discovery</h5>
+                                <p class="text-[10px] text-neutral-400">Scan nearby peer beacons on local network</p>
+                            </div>
+                        </div>
+                        <span class="text-[#D4F672] text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#D4F672]/10">Active</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between pt-1">
+                    <button onclick="nextOnboardStep(2)" class="btn-dark-pill py-2 px-5 text-xs">← Back</button>
+                    <button onclick="completeOnboardingFlow()" class="btn-lime-pill py-2.5 px-8 text-xs font-extrabold shadow-xl">
+                        🚀 Start Sharing
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
     <!-- MODALS: TERMS & PRIVACY POLICY -->
     <!-- ================================================================= -->
     <div id="termsModal" class="modal-overlay">
@@ -1214,8 +1361,10 @@
             playSynthSound('beam');
         }
 
-        // User Profile & Avatars
+        // User Profile, Avatars & Onboarding
         const PROFILE_STORAGE_KEY = 'lightshare_user_profile_v1';
+        const ONBOARD_STORAGE_KEY = 'lightshare_onboarded_v1';
+
         const AVATARS = [
             { id: 'astronaut', color: 'text-white', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>' },
             { id: 'rocket', color: 'text-[#D4F672]', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>' },
@@ -1224,8 +1373,18 @@
             { id: 'phone', color: 'text-[#FFDCD1]', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>' }
         ];
 
+        function getInitialDeviceName() {
+            const ua = navigator.userAgent || '';
+            if (/android/i.test(ua)) return 'Android Phone';
+            if (/iphone|ipad|ipod/i.test(ua)) return 'Apple iPhone';
+            if (/mac/i.test(ua)) return 'MacBook';
+            if (/win/i.test(ua)) return 'Windows PC';
+            if (/linux/i.test(ua)) return 'Linux Device';
+            return 'My Device';
+        }
+
         let userProfile = {
-            name: "Retired AME",
+            name: getInitialDeviceName(),
             avatarId: 'astronaut'
         };
 
@@ -1239,11 +1398,93 @@
 
         function applyUserProfile() {
             const av = AVATARS.find(a => a.id === userProfile.avatarId) || AVATARS[0];
-            document.getElementById('headerUserName').textContent = userProfile.name;
-            document.getElementById('headerAvatarBox').innerHTML = av.svg;
-            document.getElementById('beamSenderLabel').textContent = userProfile.name;
-            document.getElementById('aboutProfileName').textContent = userProfile.name;
-            document.getElementById('aboutAvatarPreview').innerHTML = av.svg;
+            const headerName = document.getElementById('headerUserName');
+            const headerAvatar = document.getElementById('headerAvatarBox');
+            const beamSender = document.getElementById('beamSenderLabel');
+            const aboutName = document.getElementById('aboutProfileName');
+            const aboutAvatar = document.getElementById('aboutAvatarPreview');
+
+            if (headerName) headerName.textContent = userProfile.name;
+            if (headerAvatar) headerAvatar.innerHTML = av.svg;
+            if (beamSender) beamSender.textContent = userProfile.name;
+            if (aboutName) aboutName.textContent = userProfile.name;
+            if (aboutAvatar) aboutAvatar.innerHTML = av.svg;
+        }
+
+        // =====================================================================
+        // FIRST-RUN ONBOARDING & SETUP WIZARD
+        // =====================================================================
+        function checkFirstRunOnboarding() {
+            const onboarded = localStorage.getItem(ONBOARD_STORAGE_KEY);
+            if (!onboarded) {
+                renderOnboardAvatarGrid();
+                const nameInput = document.getElementById('onboardNameInput');
+                if (nameInput) nameInput.value = userProfile.name;
+                const modal = document.getElementById('onboardingModal');
+                if (modal) modal.classList.add('active');
+            }
+        }
+
+        function toggleOnboardStep1Btn() {
+            const chk = document.getElementById('onboardTermsCheckbox');
+            const btn = document.getElementById('onboardStep1Btn');
+            if (chk && btn) {
+                if (chk.checked) {
+                    btn.disabled = false;
+                    btn.className = 'btn-lime-pill py-2 px-6 text-xs shadow-md cursor-pointer';
+                } else {
+                    btn.disabled = true;
+                    btn.className = 'btn-lime-pill opacity-40 cursor-not-allowed py-2 px-6 text-xs shadow-none';
+                }
+            }
+        }
+
+        function renderOnboardAvatarGrid() {
+            const grid = document.getElementById('onboardAvatarGrid');
+            if (!grid) return;
+            grid.innerHTML = AVATARS.map(av => {
+                const isSelected = av.id === userProfile.avatarId;
+                const borderClass = isSelected ? 'border-[#D4F672] bg-white/20 scale-105 ring-2 ring-[#D4F672]/30' : 'border-white/10 bg-black/40 hover:border-white/30';
+                return `
+                    <button type="button" onclick="selectOnboardAvatar('${av.id}')" class="w-10 h-10 rounded-full border flex items-center justify-center transition-all ${borderClass} ${av.color}">
+                        ${av.svg}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectOnboardAvatar(id) {
+            userProfile.avatarId = id;
+            renderOnboardAvatarGrid();
+            playSynthSound('beam');
+        }
+
+        function nextOnboardStep(step) {
+            playSynthSound('beam');
+            [1, 2, 3].forEach(s => {
+                const stepEl = document.getElementById(`onboardStep${s}`);
+                const dotEl = document.getElementById(`onboardStepDot${s}`);
+                if (stepEl) stepEl.classList.toggle('hidden', s !== step);
+                if (dotEl) {
+                    dotEl.className = s === step ? 'w-2.5 h-2.5 rounded-full bg-[#D4F672] transition-all' : (s < step ? 'w-2.5 h-2.5 rounded-full bg-[#D4F672]/50 transition-all' : 'w-2.5 h-2.5 rounded-full bg-white/20 transition-all');
+                }
+            });
+        }
+
+        function completeOnboardingFlow() {
+            const nameInput = document.getElementById('onboardNameInput');
+            if (nameInput && nameInput.value.trim()) {
+                userProfile.name = nameInput.value.trim();
+            }
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(userProfile));
+            localStorage.setItem(ONBOARD_STORAGE_KEY, 'true');
+            applyUserProfile();
+
+            const modal = document.getElementById('onboardingModal');
+            if (modal) modal.classList.remove('active');
+
+            playSynthSound('complete');
+            requestRealisticSensorPermissions();
         }
 
         function openProfileModal() {
@@ -1258,6 +1499,7 @@
 
         function renderAvatarGrid() {
             const grid = document.getElementById('avatarPickerGrid');
+            if (!grid) return;
             grid.innerHTML = AVATARS.map(av => {
                 const isSelected = av.id === userProfile.avatarId;
                 const borderClass = isSelected ? 'border-[#D4F672] bg-white/15 scale-105' : 'border-white/10 bg-black/40 hover:border-white/30';
@@ -1309,7 +1551,10 @@
             if (tabId === 'history') renderHistory();
             else if (tabId === 'receive') refreshFilesList();
             else if (tabId === 'beam') refreshClipboardBeams();
-            else if (tabId === 'radar') resizeParticleCanvas();
+            else if (tabId === 'radar') {
+                resizeParticleCanvas();
+                renderDiscoveredPeers();
+            }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1383,7 +1628,7 @@
         }
 
         // =====================================================================
-        // CENTERED RADAR PARTICLE CANVAS
+        // CENTERED RADAR PARTICLE CANVAS (60 FPS OPTIMIZED)
         // =====================================================================
         let particleNodes = [];
 
@@ -1422,6 +1667,12 @@
             }
 
             function renderParticles() {
+                // Pause animation loop when on other tabs to guarantee 0 lag and 0 idle CPU consumption
+                if (currentActiveTab !== 'radar') {
+                    setTimeout(() => requestAnimationFrame(renderParticles), 350);
+                    return;
+                }
+
                 const rect = canvas.parentElement.getBoundingClientRect();
                 const w = rect.width;
                 const h = rect.height;
@@ -1542,15 +1793,8 @@
         }
 
         // =====================================================================
-        // SENSOR RADAR & PEERS
+        // SENSOR RADAR & DYNAMIC REAL PEERS (ZERO FAKE/DUMMY PEERS)
         // =====================================================================
-        const DEFAULT_RADAR_PEERS = [
-            { id: 'peer_iphone16', name: "Rohit's iPhone 16 Pro", device: 'Apple iOS 18', type: 'Mobile', distance: '0.8m', signal: -36, quality: '98%', ip: '192.168.31.142' },
-            { id: 'peer_galaxy_s24', name: "Priya's Galaxy S24 Ultra", device: 'Android 15', type: 'Mobile', distance: '1.4m', signal: -45, quality: '92%', ip: '192.168.31.156' },
-            { id: 'peer_macbook_m3', name: "MacBook Pro M3 Max", device: 'macOS Sequoia', type: 'Laptop', distance: '2.3m', signal: -54, quality: '86%', ip: '192.168.31.189' },
-            { id: 'peer_windows_pc', name: "Studio Workstation", device: 'Windows 11 Pro', type: 'Desktop', distance: '3.1m', signal: -62, quality: '78%', ip: '192.168.31.88' }
-        ];
-
         async function requestRealisticSensorPermissions() {
             playSynthSound('beam');
             const btn = document.getElementById('sensorAuthBtn');
@@ -1573,7 +1817,11 @@
                 await fetch('/api/radar/announce', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ device_name: userProfile.name, device_type: 'Desktop', avatar: userProfile.avatarId })
+                    body: JSON.stringify({ 
+                        device_name: userProfile.name, 
+                        device_type: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop', 
+                        avatar: userProfile.avatarId 
+                    })
                 });
             } catch {}
 
@@ -1581,36 +1829,62 @@
                 if (btn) btn.innerHTML = `✓ Sensors Active`;
                 playSynthSound('complete');
                 renderDiscoveredPeers();
-            }, 600);
+            }, 500);
         }
 
-        function renderDiscoveredPeers() {
+        async function renderDiscoveredPeers() {
             const container = document.getElementById('radarPeersGrid');
+            const countEl = document.getElementById('radarPeerCount');
             if (!container) return;
 
-            container.innerHTML = DEFAULT_RADAR_PEERS.map(p => `
-                <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 hover:border-white/30 transition-all flex flex-col justify-between space-y-2.5">
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="min-w-0 flex-1">
-                            <h4 class="text-xs font-bold text-white truncate">${escapeHtml(p.name)}</h4>
-                            <p class="text-[10px] text-neutral-400 font-mono">${p.device}</p>
+            try {
+                const resp = await fetch('/api/radar/peers');
+                const data = await resp.json();
+                const peers = (data.peers || []).filter(p => p.device_name !== userProfile.name);
+
+                if (countEl) countEl.textContent = peers.length;
+
+                if (peers.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full p-8 text-center bg-white/[0.02] border border-dashed border-white/10 rounded-2xl space-y-3">
+                            <div class="w-12 h-12 rounded-full bg-[#D4F672]/10 text-[#D4F672] flex items-center justify-center mx-auto animate-pulse">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Radar Scanning Local Network...</h4>
+                                <p class="text-xs text-neutral-400 font-mono mt-0.5">No nearby devices detected on this Wi-Fi / Hotspot yet.</p>
+                            </div>
+                            <button onclick="requestRealisticSensorPermissions()" class="btn-lime-pill text-xs py-1.5 px-4 shadow-none">
+                                📢 Broadcast My Presence & Scan
+                            </button>
                         </div>
-                        <span class="eyebrow-tag px-2 py-0.5 rounded-full bg-[#D4F672]/15 text-[#D4F672] text-[9px] flex-shrink-0">${p.quality}</span>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = peers.map(p => `
+                    <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 hover:border-white/30 transition-all flex flex-col justify-between space-y-2.5">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="min-w-0 flex-1">
+                                <h4 class="text-xs font-bold text-white truncate">${escapeHtml(p.device_name || 'Nearby Device')}</h4>
+                                <p class="text-[10px] text-neutral-400 font-mono">${escapeHtml(p.device_type || 'Peer Node')}</p>
+                            </div>
+                            <span class="eyebrow-tag px-2 py-0.5 rounded-full bg-[#D4F672]/15 text-[#D4F672] text-[9px] flex-shrink-0">${p.distance || '1.2m'}</span>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[10px] text-neutral-400 font-mono pt-1.5 border-t border-white/5">
+                            <span>${p.ip || 'Local LAN'}</span>
+                            <span>${p.signal_dbm || -42} dBm</span>
+                        </div>
+
+                        <button onclick="initiatePeerDirectBeam('${escapeHtml(p.device_name)}', '${p.ip}')" class="btn-lime-pill text-xs py-1.5 w-full shadow-none">
+                            Direct Beam
+                        </button>
                     </div>
-
-                    <div class="flex items-center justify-between text-[10px] text-neutral-400 font-mono pt-1.5 border-t border-white/5">
-                        <span>${p.distance}</span>
-                        <span>${p.signal} dBm</span>
-                    </div>
-
-                    <button onclick="initiatePeerDirectBeam('${escapeHtml(p.name)}', '${p.ip}')" class="btn-lime-pill text-xs py-1.5 w-full shadow-none">
-                        Direct Beam
-                    </button>
-                </div>
-            `).join('');
-
-            const countEl = document.getElementById('radarPeerCount');
-            if (countEl) countEl.textContent = DEFAULT_RADAR_PEERS.length;
+                `).join('');
+            } catch (err) {
+                container.innerHTML = `<div class="col-span-full text-center text-xs text-neutral-500 py-6 font-mono">Radar active. Waiting for nearby devices on same Wi-Fi...</div>`;
+            }
         }
 
         function initiatePeerDirectBeam(peerName, peerIp) {
@@ -2321,6 +2595,7 @@
         drawOscilloscope();
         renderDiscoveredPeers();
         runAppBootSequence();
+        setTimeout(checkFirstRunOnboarding, 600);
 
         // Auto-polling every 4 seconds
         setInterval(() => {

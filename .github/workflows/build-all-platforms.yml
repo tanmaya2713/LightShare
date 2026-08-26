@@ -89,8 +89,18 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug assembleRelease
           mkdir -p ../dist-apk
+          
+          # 1. Copy debug APK (already signed by Android Gradle debug key)
           find app/build/outputs/apk/debug -name "*.apk" -exec cp {} ../dist-apk/LightShare-Debug.apk \;
-          find app/build/outputs/apk/release -name "*.apk" -exec cp {} ../dist-apk/LightShare-Release.apk \;
+          
+          # 2. Sign Release APK so it installs cleanly on all Android phones
+          UNSIGNED_APK=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          if [ -n "$UNSIGNED_APK" ]; then
+            echo "Signing Release APK: $UNSIGNED_APK"
+            keytool -genkey -v -keystore release.keystore -alias lightshare -keyalg RSA -keysize 2048 -validity 10000 -storepass lightshare123 -keypass lightshare123 -dname "CN=LightShare, OU=Mobile, O=LightShare, L=City, S=State, C=US"
+            jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.keystore -storepass lightshare123 -keypass lightshare123 "$UNSIGNED_APK" lightshare
+            cp "$UNSIGNED_APK" ../dist-apk/LightShare-Release.apk
+          fi
 
       - name: Upload Android APK Artifacts (Debug & Release)
         uses: actions/upload-artifact@v4
