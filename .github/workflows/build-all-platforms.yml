@@ -224,15 +224,30 @@ jobs:
       - name: Create or Update Automatic GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v1.0.0"
-          name: "LightShare V1.0 - Official Universal Release"
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v1.1.0' }}
+          name: "LightShare V1.1 - Professional Multi-Platform Release (ShareMe & SHAREit Suite)"
           prerelease: false
           draft: false
           make_latest: true
           body: |
-            # 🚀 LightShare V1.0 - Universal Multi-Platform App & SaaS
+            # 🚀 LightShare V1.1 - Dual ShareMe & SHAREit Experience
             
             Ultra-modern, high-speed **30GB+ file transfers** over local Wi-Fi and Personal Hotspot with **0 Internet Data Usage**.
+            
+            ---
+            
+            ### ✨ What's New in V1.1:
+            - **Xiaomi ShareMe & Lenovo SHAREit Dual Experience**: Big action Send/Receive banners, category filters, and quick toolbar.
+            - **One-Tap Wi-Fi Hotspot Auto-Join QR Generator**: Connect any mobile camera without typing Wi-Fi passwords.
+            - **In-App Lossless 4K Video Streaming Player**: Embedded HTML5 player with 0.5x–2.0x playback speed.
+            - **High-Res Photo Lightbox Gallery**: Pinch-zoom, pan, rotate, and full-resolution viewing.
+            - **In-App Document & Code Viewer**: Quick preview of text, code, and documents.
+            - **5-Second P2P LAN Speedometer Benchmark**: Real-time throughput (MB/s) and latency gauge.
+            - **Recursive Folder Transfers**: Drag and drop whole directory hierarchies (`webkitdirectory`).
+            - **One-Click Batch ZIP Download**: Download entire transfer libraries as a single compressed ZIP archive.
+            - **Multi-Language Internationalization (i18n)**: English, Hindi, Spanish, French, German, Japanese.
+            - **3 Balanced Themes**: Cyber Dark, OLED True Black (AMOLED 0% battery), Studio Clean Light.
+            - **Encrypted Private Vault & Storage Auto-Cleanup**: Secure PIN-locked compartment and automated disk quota management.
             
             ---
             

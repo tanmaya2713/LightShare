@@ -204,6 +204,18 @@ async def serve_sw():
     raise HTTPException(status_code=404, detail="Service Worker not found")
 
 
+@app.get("/api/status")
+async def get_system_status():
+    """Return overall system health, storage statistics, and active configuration."""
+    return JSONResponse({
+        "status": "healthy",
+        "app_name": "LightShare",
+        "version": "1.0.0",
+        "port": DEFAULT_PORT,
+        "storage": get_storage_stats()
+    })
+
+
 @app.get("/api/network-info")
 async def get_network_info():
     """Return all detected network interfaces (Wi-Fi, Hotspot, Ethernet)."""
@@ -601,6 +613,7 @@ async def finalize_parallel_upload(request: Request):
         "filename": filename,
         "size": actual_size,
         "category": category,
+        "sha256": sha256_digest,
         "sha256_hash": sha256_digest,
         "lossless": True
     })
@@ -1053,6 +1066,159 @@ async def batch_delete_files(payload: Dict[str, List[str]]):
     conn.commit()
     conn.close()
     return JSONResponse({"success": True, "deleted_count": deleted_count})
+
+
+# =============================================================================
+# API Routes: Batch ZIP Archiving & One-Click Download
+# =============================================================================
+
+@app.get("/api/download-zip")
+@app.post("/api/download-zip")
+async def download_batch_zip(request: Request):
+    """
+    Generate and stream a lossless ZIP archive of selected or all completed files.
+    Allows one-click batch downloading of entire folders and photo albums.
+    """
+    import zipfile
+    import io
+    
+    file_ids = []
+    if request.method == "POST":
+        try:
+            body = await request.json()
+            file_ids = body.get("ids", [])
+        except Exception:
+            pass
+            
+    conn = get_db_connection(DB_PATH)
+    cursor = conn.cursor()
+    
+    if file_ids:
+        placeholders = ",".join("?" * len(file_ids))
+        cursor.execute(f"SELECT filename, filepath FROM transfers WHERE id IN ({placeholders}) AND status = 'completed'", file_ids)
+    else:
+        cursor.execute("SELECT filename, filepath FROM transfers WHERE status = 'completed'")
+        
+    rows = cursor.fetchall()
+    conn.close()
+    
+    if not rows:
+        raise HTTPException(status_code=404, detail="No files available for ZIP archive.")
+        
+    # In-memory streaming zip buffer
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+        for r in rows:
+            fname = r["filename"]
+            fpath = r["filepath"]
+            if fpath and os.path.exists(fpath):
+                zf.write(fpath, arcname=fname)
+                
+    zip_buffer.seek(0)
+    zip_filename = f"LightShare_Archive_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
+    
+    return StreamingResponse(
+        zip_buffer,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f'attachment; filename="{zip_filename}"',
+            "Content-Length": str(zip_buffer.getbuffer().nbytes)
+        }
+    )
+
+
+# =============================================================================
+# API Routes: 5-Second LAN Speedometer Benchmark Engine
+# =============================================================================
+
+@app.get("/api/speedtest/ping")
+async def speedtest_ping():
+    """Measure LAN round-trip ping latency and clock jitter."""
+    return JSONResponse({
+        "status": "online",
+        "timestamp_ms": int(datetime.now().timestamp() * 1000)
+    })
+
+
+@app.get("/api/speedtest/stream")
+async def speedtest_stream(size_mb: int = 15):
+    """
+    Stream in-memory binary payload (default 15MB) to benchmark pure LAN transfer bandwidth.
+    """
+    size_mb = max(1, min(size_mb, 50))
+    chunk_size = 64 * 1024 # 64 KB
+    total_bytes = size_mb * 1024 * 1024
+    chunk = b"\x00" * chunk_size
+
+    async def generate_benchmark_stream():
+        bytes_sent = 0
+        while bytes_sent < total_bytes:
+            remaining = total_bytes - bytes_sent
+            to_send = min(chunk_size, remaining)
+            yield chunk[:to_send]
+            bytes_sent += to_send
+
+    return StreamingResponse(
+        generate_benchmark_stream(),
+        media_type="application/octet-stream",
+        headers={
+            "Content-Length": str(total_bytes),
+            "Cache-Control": "no-cache, no-store, must-revalidate"
+        }
+    )
+
+
+# =============================================================================
+# API Routes: Auto-Cleanup Storage Policy & Disk Quota Manager
+# =============================================================================
+
+@app.post("/api/storage/cleanup")
+async def auto_storage_cleanup(payload: Dict[str, str]):
+    """
+    Execute storage cleanup based on user policy ('24h', '7d', '30d', 'all').
+    """
+    policy = payload.get("policy", "never")
+    if policy == "never":
+        return JSONResponse({"success": True, "cleaned_count": 0, "freed_bytes": 0})
+        
+    conn = get_db_connection(DB_PATH)
+    cursor = conn.cursor()
+    
+    time_filter = ""
+    if policy == "24h":
+        time_filter = "datetime('now', '-1 day')"
+    elif policy == "7d":
+        time_filter = "datetime('now', '-7 days')"
+    elif policy == "30d":
+        time_filter = "datetime('now', '-30 days')"
+    elif policy == "all":
+        time_filter = "datetime('now', '+1 minute')"
+        
+    if time_filter:
+        cursor.execute(f"SELECT id, filepath, size FROM transfers WHERE uploaded_at <= {time_filter}")
+        rows = cursor.fetchall()
+        cleaned_count = 0
+        freed_bytes = 0
+        
+        for r in rows:
+            fid = r["id"]
+            fpath = r["filepath"]
+            fsize = r["size"] or 0
+            cursor.execute("DELETE FROM transfers WHERE id = ?", (fid,))
+            if fpath and os.path.exists(fpath):
+                try:
+                    os.remove(fpath)
+                except Exception:
+                    pass
+            cleaned_count += 1
+            freed_bytes += fsize
+            
+        conn.commit()
+        conn.close()
+        return JSONResponse({"success": True, "cleaned_count": cleaned_count, "freed_bytes": freed_bytes})
+        
+    conn.close()
+    return JSONResponse({"success": True, "cleaned_count": 0, "freed_bytes": 0})
 
 
 # =============================================================================

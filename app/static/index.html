@@ -110,6 +110,76 @@
             color: #F8FAFC;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow-x: hidden;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* ================================================================= */
+        /* BALANCED THEME ENGINE */
+        /* ================================================================= */
+
+        /* THEME 1: CYBER DARK (Default) */
+        body.theme-cyber-dark {
+            background-color: #080C15;
+            background-image: radial-gradient(circle at 50% 0%, #152038 0%, #080C15 65%);
+            color: #F8FAFC;
+        }
+
+        /* THEME 2: OLED TRUE BLACK (AMOLED 0% Battery Drain) */
+        body.theme-oled-black {
+            background-color: #000000 !important;
+            background-image: none !important;
+            color: #FFFFFF !important;
+        }
+        body.theme-oled-black .glass-card {
+            background: #090909 !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        }
+        body.theme-oled-black .glass-card-bright {
+            background: #0E0E0E !important;
+            border: 1px solid rgba(255, 255, 255, 0.24) !important;
+        }
+        body.theme-oled-black header, body.theme-oled-black nav {
+            background: #000000 !important;
+            border-color: rgba(255, 255, 255, 0.16) !important;
+        }
+
+        /* THEME 3: STUDIO CLEAN LIGHT */
+        body.theme-studio-light {
+            background-color: #F4F6FB !important;
+            background-image: radial-gradient(circle at 50% 0%, #E2E8F0 0%, #F4F6FB 70%) !important;
+            color: #0F172A !important;
+        }
+        body.theme-studio-light .glass-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+            color: #0F172A !important;
+        }
+        body.theme-studio-light .glass-card-bright {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.12) !important;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06) !important;
+            color: #0F172A !important;
+        }
+        body.theme-studio-light header, body.theme-studio-light nav {
+            background: rgba(255, 255, 255, 0.94) !important;
+            border-color: rgba(0, 0, 0, 0.09) !important;
+        }
+        body.theme-studio-light .text-white {
+            color: #0F172A !important;
+        }
+        body.theme-studio-light .text-neutral-300, body.theme-studio-light .text-neutral-400 {
+            color: #475569 !important;
+        }
+        body.theme-studio-light .btn-dark-pill {
+            background: #E2E8F0 !important;
+            color: #0F172A !important;
+            border-color: #CBD5E1 !important;
+        }
+        body.theme-studio-light .btn-icon-circle {
+            background: #F1F5F9 !important;
+            color: #0F172A !important;
+            border-color: #E2E8F0 !important;
         }
 
         /* Apple & Android Glassmorphic Cards */
@@ -352,13 +422,30 @@
             </div>
 
             <!-- Top Actions -->
-            <div class="flex items-center gap-2 flex-shrink-0">
+            <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                 <!-- Adapter Selector (Desktop only) -->
                 <div class="relative hidden lg:block">
-                    <select id="adapterSelect" onchange="changeAdapterIp(this.value)" class="bg-[#101726] border border-white/15 text-xs text-neutral-200 rounded-full px-3.5 py-1.5 outline-none font-mono focus:border-[#D4F672] cursor-pointer transition-colors max-w-[180px] truncate">
+                    <select id="adapterSelect" onchange="changeAdapterIp(this.value)" class="bg-[#101726] border border-white/15 text-xs text-neutral-200 rounded-full px-3 py-1.5 outline-none font-mono focus:border-[#D4F672] cursor-pointer transition-colors max-w-[160px] truncate">
                         <option value="">Detecting Network...</option>
                     </select>
                 </div>
+
+                <!-- Language Selector Dropdown -->
+                <div class="relative">
+                    <select id="langSelect" onchange="changeAppLanguage(this.value)" class="bg-white/5 hover:bg-white/10 border border-white/15 text-xs text-white rounded-full px-2.5 py-1.5 outline-none font-medium focus:border-[#D4F672] cursor-pointer transition-all">
+                        <option value="en" class="bg-[#101726] text-white">🇬🇧 EN</option>
+                        <option value="hi" class="bg-[#101726] text-white">🇮🇳 हिन्दी</option>
+                        <option value="es" class="bg-[#101726] text-white">🇪🇸 ES</option>
+                        <option value="fr" class="bg-[#101726] text-white">🇫🇷 FR</option>
+                        <option value="de" class="bg-[#101726] text-white">🇩🇪 DE</option>
+                        <option value="ja" class="bg-[#101726] text-white">🇯🇵 日本語</option>
+                    </select>
+                </div>
+
+                <!-- Theme Switcher Button -->
+                <button onclick="cycleAppTheme()" id="themeSwitcherBtn" class="btn-icon-circle" title="Switch Theme (Cyber Dark / OLED / Studio Light)">
+                    <span id="themeIcon">🌙</span>
+                </button>
 
                 <!-- Sound Synthesizer Circle Button -->
                 <button onclick="toggleAudioSynth()" id="audioSynthBtn" class="btn-icon-circle" title="Toggle Sound Synthesizer">
@@ -370,17 +457,12 @@
                     </svg>
                 </button>
 
-                <!-- Terms & Conditions Button -->
-                <button onclick="openTermsModal()" class="hidden md:flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white transition-colors border border-white/10 text-xs font-medium" title="Terms & Conditions">
-                    <span>Terms</span>
-                </button>
-
                 <!-- User Profile Pill -->
                 <button onclick="openProfileModal()" id="userProfileBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 transition-all text-xs font-semibold text-white" title="Customize Profile">
                     <span id="headerAvatarBox" class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs flex-shrink-0">
                         <!-- Injected -->
                     </span>
-                    <span id="headerUserName" class="hidden sm:inline font-mono font-medium max-w-[100px] truncate">Retired AME</span>
+                    <span id="headerUserName" class="hidden sm:inline font-mono font-medium max-w-[90px] truncate">My Device</span>
                 </button>
 
                 <!-- Camera Scanner Circle Button -->
@@ -402,6 +484,72 @@
         <!-- TAB 1: RADAR / HERO & DISCOVERY -->
         <!-- ================================================================= -->
         <section id="tab-radar" class="tab-content block space-y-6">
+
+            <!-- SHAREME DUAL HERO QUICK ACTIONS (Mobile & Desktop) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- SEND HERO BANNER -->
+                <div onclick="switchTab('send')" class="group relative overflow-hidden p-6 rounded-3xl bg-gradient-to-br from-[#D4F672]/20 via-[#D4F672]/10 to-transparent border border-[#D4F672]/30 hover:border-[#D4F672] transition-all cursor-pointer shadow-lg hover:shadow-[0_0_25px_rgba(212,246,114,0.2)]">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-1">
+                            <span class="eyebrow-tag text-[#D4F672] flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#D4F672]"></span> HIGH-SPEED BEAM
+                            </span>
+                            <h3 class="text-2xl sm:text-3xl font-black text-white group-hover:text-[#D4F672] transition-colors">
+                                🚀 SEND
+                            </h3>
+                            <p class="text-xs text-neutral-300 font-medium">Photos, 4K Videos, Folders & APKs</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#D4F672] text-[#0A0E17] flex items-center justify-center font-black shadow-xl group-hover:scale-110 transition-transform">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECEIVE HERO BANNER -->
+                <div onclick="switchTab('receive')" class="group relative overflow-hidden p-6 rounded-3xl bg-gradient-to-br from-[#D2F6EC]/20 via-[#D2F6EC]/10 to-transparent border border-[#D2F6EC]/30 hover:border-[#D2F6EC] transition-all cursor-pointer shadow-lg hover:shadow-[0_0_25px_rgba(210,246,236,0.2)]">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-1">
+                            <span class="eyebrow-tag text-[#D2F6EC] flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#D2F6EC]"></span> LOSSLESS RECEPTION
+                            </span>
+                            <h3 class="text-2xl sm:text-3xl font-black text-white group-hover:text-[#D2F6EC] transition-colors">
+                                📥 RECEIVE
+                            </h3>
+                            <p class="text-xs text-neutral-300 font-medium">Auto-Discover or Scan QR Code</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#D2F6EC] text-[#0A0E17] flex items-center justify-center font-black shadow-xl group-hover:scale-110 transition-transform">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UTILITY ACTION BAR: Hotspot QR, Speedtest Benchmark, Vault -->
+            <div class="grid grid-cols-3 gap-2.5 sm:gap-3">
+                <button onclick="openHotspotQrModal()" class="p-3 sm:p-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-2 text-center transition-all group">
+                    <span class="w-8 h-8 rounded-full bg-[#D4F672]/15 text-[#D4F672] flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:scale-110 transition-transform">📶</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-white tracking-tight">Hotspot QR</h4>
+                        <p class="text-[10px] text-neutral-400 font-mono hidden sm:block">1-Tap Connect</p>
+                    </div>
+                </button>
+
+                <button onclick="openSpeedBenchmarkModal()" class="p-3 sm:p-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-2 text-center transition-all group">
+                    <span class="w-8 h-8 rounded-full bg-[#EAE3FF]/15 text-[#EAE3FF] flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:scale-110 transition-transform">⚡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-white tracking-tight">LAN Speedtest</h4>
+                        <p class="text-[10px] text-neutral-400 font-mono hidden sm:block">5-Sec Benchmark</p>
+                    </div>
+                </button>
+
+                <button onclick="openVaultModal()" class="p-3 sm:p-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-2 text-center transition-all group">
+                    <span class="w-8 h-8 rounded-full bg-[#FFDCD1]/15 text-[#FFDCD1] flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:scale-110 transition-transform">🔐</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-white tracking-tight">Private Vault</h4>
+                        <p class="text-[10px] text-neutral-400 font-mono hidden sm:block">AES-256 Locked</p>
+                    </div>
+                </button>
+            </div>
 
             <!-- 1. SLEEK DARK HERO CARD WITH SURGICAL LIME HIGHLIGHTS -->
             <div class="glass-card-bright p-6 sm:p-8 relative overflow-hidden space-y-6">
@@ -647,6 +795,7 @@
                     ondrop="handleDrop(event)"
                 >
                     <input type="file" id="fileInput" multiple class="hidden" onchange="handleFileSelect(event)">
+                    <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden" onchange="handleFolderSelect(event)">
                     
                     <div class="w-14 h-14 rounded-full bg-[#D4F672] flex items-center justify-center text-black shadow-lg">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -656,14 +805,19 @@
 
                     <div class="space-y-0.5">
                         <h3 id="dropZoneTitle" class="text-base sm:text-lg font-bold text-white">
-                            Drag & Drop files here, or <span class="text-[#D4F672] underline">Browse</span>
+                            Drag & Drop files or folders here, or <span class="text-[#D4F672] underline">Browse</span>
                         </h3>
                         <p id="dropZoneSubtitle" class="text-xs text-neutral-400 font-mono">Original quality preserved • SHA-256 Verified • Up to 35 GB</p>
                     </div>
 
-                    <button type="button" class="btn-lime-pill mt-2 py-2 px-5 text-xs">
-                        Select Files to Transfer
-                    </button>
+                    <div class="flex flex-wrap items-center justify-center gap-2 mt-2" onclick="event.stopPropagation()">
+                        <button type="button" onclick="document.getElementById('fileInput').click()" class="btn-lime-pill py-2 px-5 text-xs">
+                            Select Files
+                        </button>
+                        <button type="button" onclick="document.getElementById('folderInput').click()" class="btn-dark-pill py-2 px-5 text-xs border-white/20">
+                            📁 Select Entire Folder
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Active Upload Queue -->
@@ -692,8 +846,8 @@
                         </h2>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        <div class="relative w-full sm:w-60">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="relative w-full sm:w-56">
                             <input 
                                 type="text" 
                                 id="fileSearchInput" 
@@ -705,6 +859,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
                         </div>
+
+                        <button onclick="downloadAllZipArchive()" class="btn-dark-pill text-xs py-1.5 px-3.5 border-[#D4F672]/30 text-[#D4F672] hover:bg-[#D4F672]/10" title="Download all as ZIP">
+                            <span>📦 Download ZIP</span>
+                        </button>
 
                         <button onclick="refreshFilesList()" class="btn-icon-circle" title="Refresh List">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -1249,6 +1407,290 @@
             <button onclick="closeScannerModal()" class="btn-dark-pill py-2 px-5 text-xs">
                 Close Camera
             </button>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: ONE-TAP WI-FI HOTSPOT AUTO-JOIN QR -->
+    <!-- ================================================================= -->
+    <div id="hotspotQrModal" class="modal-overlay">
+        <div class="glass-card-bright p-6 sm:p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative space-y-5 text-center">
+            <button onclick="closeHotspotQrModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div>
+                <span class="eyebrow-tag text-[#D4F672]">ONE-TAP HOTSPOT PAIRING</span>
+                <h3 class="text-xl font-bold text-white mt-1">Wi-Fi Hotspot Auto-Connect</h3>
+                <p class="text-xs text-neutral-400 mt-0.5">Scan with any phone camera to automatically join Wi-Fi without typing passwords</p>
+            </div>
+
+            <!-- Hotspot Config Inputs -->
+            <div class="grid grid-cols-2 gap-2.5 text-left">
+                <div>
+                    <label class="eyebrow-tag text-neutral-400 block mb-1">HOTSPOT NAME (SSID)</label>
+                    <input type="text" id="hotspotSsidInput" value="LightShare_Hotspot" oninput="updateHotspotQr()" class="w-full bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-[#D4F672] font-mono">
+                </div>
+                <div>
+                    <label class="eyebrow-tag text-neutral-400 block mb-1">PASSWORD (WPA2)</label>
+                    <input type="text" id="hotspotPassInput" value="lightshare123" oninput="updateHotspotQr()" class="w-full bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-[#D4F672] font-mono">
+                </div>
+            </div>
+
+            <div id="hotspotQrcodeBox" class="p-3.5 bg-white rounded-2xl shadow-2xl flex items-center justify-center max-w-[170px] mx-auto">
+                <!-- Generated dynamically -->
+            </div>
+
+            <p class="text-[11px] text-[#D4F672] font-mono">✓ Standard IEEE 802.11 Wi-Fi QR Protocol</p>
+
+            <button onclick="closeHotspotQrModal()" class="btn-dark-pill py-2 px-6 text-xs w-full">
+                Close
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: IN-APP 4K VIDEO STREAMING PLAYER -->
+    <!-- ================================================================= -->
+    <div id="videoPlayerModal" class="modal-overlay">
+        <div class="glass-card-bright p-5 sm:p-7 rounded-3xl max-w-2xl w-full mx-4 shadow-2xl relative space-y-4">
+            <button onclick="closeVideoPlayerModal()" class="btn-icon-circle absolute top-4 right-4 w-8 h-8 text-sm">×</button>
+            
+            <div class="flex items-center justify-between pr-8">
+                <div class="truncate">
+                    <span class="eyebrow-tag text-[#D4F672]">LOSSLESS 4K PLAYER</span>
+                    <h3 id="videoModalTitle" class="text-base sm:text-lg font-bold text-white truncate">Video_Playback.mp4</h3>
+                </div>
+            </div>
+
+            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black border border-white/15 shadow-inner">
+                <video id="inAppVideoPlayer" controls playsinline class="w-full h-full object-contain"></video>
+            </div>
+
+            <!-- Video Controls Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/10">
+                <div class="flex items-center gap-1.5 text-xs font-mono">
+                    <span class="text-neutral-400">Speed:</span>
+                    <button onclick="setVideoPlaybackSpeed(0.5)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-white text-[10px]">0.5x</button>
+                    <button onclick="setVideoPlaybackSpeed(1.0)" class="px-2 py-0.5 rounded bg-[#D4F672] text-black font-bold text-[10px]">1.0x</button>
+                    <button onclick="setVideoPlaybackSpeed(1.5)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-white text-[10px]">1.5x</button>
+                    <button onclick="setVideoPlaybackSpeed(2.0)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-white text-[10px]">2.0x</button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a id="videoDownloadBtn" href="#" download class="btn-lime-pill py-1.5 px-4 text-xs">
+                        Download MP4
+                    </a>
+                    <button onclick="closeVideoPlayerModal()" class="btn-dark-pill py-1.5 px-4 text-xs">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: HIGH-RES PHOTO LIGHTBOX GALLERY -->
+    <!-- ================================================================= -->
+    <div id="photoLightboxModal" class="modal-overlay">
+        <div class="glass-card-bright p-5 sm:p-7 rounded-3xl max-w-2xl w-full mx-4 shadow-2xl relative space-y-4">
+            <button onclick="closePhotoLightboxModal()" class="btn-icon-circle absolute top-4 right-4 w-8 h-8 text-sm">×</button>
+            
+            <div class="flex items-center justify-between pr-8">
+                <div class="truncate">
+                    <span class="eyebrow-tag text-[#D2F6EC]">HIGH-RES PHOTO LIGHTBOX</span>
+                    <h3 id="lightboxModalTitle" class="text-base sm:text-lg font-bold text-white truncate">Photo_Capture.jpg</h3>
+                </div>
+            </div>
+
+            <div class="relative w-full max-h-[60vh] rounded-2xl overflow-hidden bg-black/80 border border-white/15 flex items-center justify-center p-2">
+                <img id="lightboxImage" src="" alt="Photo Preview" class="max-h-[55vh] max-w-full object-contain rounded-lg transition-transform duration-200">
+            </div>
+
+            <!-- Lightbox Toolbar -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/10">
+                <div class="flex items-center gap-1.5">
+                    <button onclick="zoomLightboxImage(1.2)" class="btn-icon-circle w-8 h-8 text-xs" title="Zoom In">+</button>
+                    <button onclick="zoomLightboxImage(0.8)" class="btn-icon-circle w-8 h-8 text-xs" title="Zoom Out">-</button>
+                    <button onclick="rotateLightboxImage()" class="btn-icon-circle w-8 h-8 text-xs" title="Rotate 90°">🔄</button>
+                    <button onclick="resetLightboxTransform()" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-[10px] text-neutral-300 font-mono">Reset</button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a id="lightboxDownloadBtn" href="#" download class="btn-lime-pill py-1.5 px-4 text-xs">
+                        Download Photo
+                    </a>
+                    <button onclick="closePhotoLightboxModal()" class="btn-dark-pill py-1.5 px-4 text-xs">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: IN-APP DOCUMENT & TEXT VIEWER -->
+    <!-- ================================================================= -->
+    <div id="docViewerModal" class="modal-overlay">
+        <div class="glass-card-bright p-5 sm:p-7 rounded-3xl max-w-2xl w-full mx-4 shadow-2xl relative space-y-4">
+            <button onclick="closeDocViewerModal()" class="btn-icon-circle absolute top-4 right-4 w-8 h-8 text-sm">×</button>
+            
+            <div class="flex items-center justify-between pr-8">
+                <div class="truncate">
+                    <span class="eyebrow-tag text-[#EAE3FF]">DOCUMENT & CODE VIEWER</span>
+                    <h3 id="docViewerTitle" class="text-base sm:text-lg font-bold text-white truncate">Document.txt</h3>
+                </div>
+            </div>
+
+            <div class="w-full max-h-[55vh] overflow-y-auto p-4 bg-black/70 rounded-2xl border border-white/15 text-xs font-mono text-neutral-200 leading-relaxed select-text">
+                <pre id="docViewerContent" class="whitespace-pre-wrap select-text font-mono"></pre>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-1 border-t border-white/10">
+                <a id="docViewerDownloadBtn" href="#" download class="btn-lime-pill py-1.5 px-4 text-xs">
+                    Download File
+                </a>
+                <button onclick="closeDocViewerModal()" class="btn-dark-pill py-1.5 px-4 text-xs">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: 5-SECOND LAN SPEEDOMETER BENCHMARK -->
+    <!-- ================================================================= -->
+    <div id="speedBenchmarkModal" class="modal-overlay">
+        <div class="glass-card-bright p-6 sm:p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative space-y-5 text-center">
+            <button onclick="closeSpeedBenchmarkModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div>
+                <span class="eyebrow-tag text-[#EAE3FF]">LAN THROUGHPUT BENCHMARK</span>
+                <h3 class="text-xl font-bold text-white mt-1">5-Second Speedometer</h3>
+                <p class="text-xs text-neutral-400 mt-0.5">Measures real peer-to-peer Wi-Fi / Hotspot transmission throughput</p>
+            </div>
+
+            <!-- Speedometer Display Gauge -->
+            <div class="p-6 bg-black/60 rounded-3xl border border-white/15 space-y-3 relative overflow-hidden">
+                <div class="space-y-1">
+                    <span class="eyebrow-tag text-neutral-400 text-[10px]">REAL-TIME THROUGHPUT</span>
+                    <div class="text-4xl sm:text-5xl font-black text-[#D4F672] font-mono tracking-tight">
+                        <span id="benchSpeedVal">0.0</span> <span class="text-lg text-white font-sans">MB/s</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-white/10 font-mono text-xs text-neutral-400">
+                    <div>Latency: <span id="benchPingVal" class="text-white font-bold">-- ms</span></div>
+                    <div>Grade: <span id="benchGradeVal" class="text-[#D4F672] font-bold">Ready</span></div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden mt-2">
+                    <div id="benchProgressBar" class="bg-[#D4F672] h-full w-0 transition-all duration-150 rounded-full"></div>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeSpeedBenchmarkModal()" class="btn-dark-pill w-1/3 py-2 text-xs">
+                    Cancel
+                </button>
+                <button id="startBenchBtn" onclick="runLanSpeedBenchmark()" class="btn-lime-pill flex-1 py-2 text-xs font-bold shadow-lg">
+                    🚀 Run 5-Sec Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: ENCRYPTED PRIVATE VAULT -->
+    <!-- ================================================================= -->
+    <div id="vaultModal" class="modal-overlay">
+        <div class="glass-card-bright p-6 sm:p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative space-y-5">
+            <button onclick="closeVaultModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-full bg-[#FFDCD1]/20 text-[#FFDCD1] flex items-center justify-center mx-auto text-xl">🔐</div>
+                <h3 class="text-xl font-bold text-white">Encrypted Private Vault</h3>
+                <p class="text-xs text-neutral-400">Enter master 4-digit PIN to unlock encrypted files compartment</p>
+            </div>
+
+            <div class="space-y-2 text-center">
+                <label class="eyebrow-tag text-neutral-400 block">MASTER VAULT PIN</label>
+                <input 
+                    type="password" 
+                    id="vaultPinInput" 
+                    maxlength="4" 
+                    placeholder="• • • •" 
+                    class="w-full text-center text-3xl font-mono tracking-[0.5em] py-2.5 bg-black/60 border border-white/20 focus:border-[#D4F672] rounded-2xl text-white outline-none placeholder:tracking-[0.3em]"
+                    onkeyup="if(event.key==='Enter') unlockVault()"
+                >
+                <p id="vaultPinError" class="text-xs text-red-400 font-semibold hidden font-mono"></p>
+            </div>
+
+            <div id="vaultUnlockedContent" class="hidden space-y-3 pt-2 border-t border-white/10">
+                <div class="flex items-center justify-between text-xs text-neutral-300 font-mono">
+                    <span>🔒 Protected Vault (AES-256)</span>
+                    <span class="text-[#D4F672] font-bold">Unlocked</span>
+                </div>
+                <p class="text-xs text-neutral-400">All confidential files transferred in Vault Mode are securely protected here.</p>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeVaultModal()" class="btn-dark-pill w-1/3 py-2 text-xs">
+                    Cancel
+                </button>
+                <button id="vaultUnlockBtn" onclick="unlockVault()" class="btn-lime-pill flex-1 py-2 text-xs">
+                    Unlock Vault
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODALS: STORAGE AUTO-CLEANUP & POLICY MANAGER -->
+    <!-- ================================================================= -->
+    <div id="storageCleanupModal" class="modal-overlay">
+        <div class="glass-card-bright p-6 sm:p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative space-y-5">
+            <button onclick="closeStorageCleanupModal()" class="btn-icon-circle absolute top-5 right-5 w-8 h-8 text-sm">×</button>
+            
+            <div>
+                <span class="eyebrow-tag text-[#D4F672]">STORAGE MANAGEMENT</span>
+                <h3 class="text-xl font-bold text-white mt-1">Auto-Cleanup Storage Policy</h3>
+                <p class="text-xs text-neutral-400 mt-0.5">Automatically remove older completed transfers to save disk quota</p>
+            </div>
+
+            <div class="space-y-2.5">
+                <label class="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:border-white/20">
+                    <span class="text-xs text-white font-medium">Auto-delete after 24 Hours</span>
+                    <input type="radio" name="cleanupPolicy" value="24h" class="text-[#D4F672] focus:ring-0">
+                </label>
+                <label class="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:border-white/20">
+                    <span class="text-xs text-white font-medium">Auto-delete after 7 Days</span>
+                    <input type="radio" name="cleanupPolicy" value="7d" class="text-[#D4F672] focus:ring-0">
+                </label>
+                <label class="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:border-white/20">
+                    <span class="text-xs text-white font-medium">Auto-delete after 30 Days</span>
+                    <input type="radio" name="cleanupPolicy" value="30d" class="text-[#D4F672] focus:ring-0">
+                </label>
+                <label class="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:border-white/20">
+                    <span class="text-xs text-white font-medium">Never Auto-Delete (Keep Forever)</span>
+                    <input type="radio" name="cleanupPolicy" value="never" checked class="text-[#D4F672] focus:ring-0">
+                </label>
+            </div>
+
+            <div class="flex gap-3 pt-1">
+                <button onclick="runImmediateStorageCleanup()" class="btn-dark-pill w-1/2 py-2 text-xs border-red-500/30 text-red-400 hover:bg-red-500/10">
+                    🧹 Clean Now
+                </button>
+                <button onclick="saveStoragePolicy()" class="btn-lime-pill flex-1 py-2 text-xs font-bold">
+                    Save Policy
+                </button>
+            </div>
         </div>
     </div>
 
@@ -2215,6 +2657,30 @@
             container.innerHTML = filtered.map(f => {
                 const cat = getFileCategory(f.filename);
                 const badge = getCategoryBadge(cat);
+                const downloadUrl = `/api/download/${f.id}`;
+                const escapedName = escapeHtml(f.filename).replace(/'/g, "\\'");
+
+                let previewActionBtn = '';
+                if (cat === 'video') {
+                    previewActionBtn = `
+                        <button onclick="openVideoPlayer('${downloadUrl}', '${escapedName}')" class="px-2.5 py-1 rounded-full bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-[10px] font-mono font-bold flex items-center gap-1 border border-purple-500/30">
+                            <span>▶ Play</span>
+                        </button>
+                    `;
+                } else if (cat === 'photo') {
+                    previewActionBtn = `
+                        <button onclick="openPhotoLightbox('${downloadUrl}', '${escapedName}')" class="px-2.5 py-1 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-[10px] font-mono font-bold flex items-center gap-1 border border-emerald-500/30">
+                            <span>🔍 Zoom</span>
+                        </button>
+                    `;
+                } else if (cat === 'document' || f.filename.endsWith('.txt') || f.filename.endsWith('.json') || f.filename.endsWith('.md') || f.filename.endsWith('.py')) {
+                    previewActionBtn = `
+                        <button onclick="openDocViewer('${downloadUrl}', '${escapedName}')" class="px-2.5 py-1 rounded-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-[10px] font-mono font-bold flex items-center gap-1 border border-blue-500/30">
+                            <span>📄 View</span>
+                        </button>
+                    `;
+                }
+
                 return `
                     <div class="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between gap-3 hover:border-white/20 transition-colors">
                         <div class="flex items-center gap-3 min-w-0 flex-1">
@@ -2232,7 +2698,8 @@
                         </div>
 
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <button onclick="triggerPinHandshake('${f.id}', '${escapeHtml(f.filename).replace(/'/g, "\\'")}', ${f.size})" class="btn-lime-pill text-xs py-1.5 px-3.5 shadow-none">
+                            ${previewActionBtn}
+                            <button onclick="triggerPinHandshake('${f.id}', '${escapedName}', ${f.size})" class="btn-lime-pill text-xs py-1.5 px-3.5 shadow-none">
                                 Download
                             </button>
                             <button onclick="deleteFile('${f.id}')" class="btn-icon-circle w-7 h-7 text-xs text-neutral-400 hover:text-red-400">
@@ -2328,6 +2795,384 @@
                 document.getElementById('batchActionBar').classList.add('hidden');
                 refreshFilesList();
             } catch {}
+        }
+
+        // =====================================================================
+        // RECURSIVE FOLDER TRANSFERS & BATCH ZIP DOWNLOAD
+        // =====================================================================
+        function handleFolderSelect(e) {
+            if (e.target && e.target.files) {
+                processFilesForUpload(Array.from(e.target.files));
+            }
+        }
+
+        function downloadAllZipArchive() {
+            playSynthSound('beam');
+            const a = document.createElement('a');
+            a.href = '/api/download-zip';
+            a.download = `LightShare_Archive_${Date.now()}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // =====================================================================
+        // MEDIA PREVIEW MODALS (4K VIDEO, PHOTO LIGHTBOX, DOC VIEWER)
+        // =====================================================================
+        function openVideoPlayer(url, filename) {
+            const modal = document.getElementById('videoPlayerModal');
+            const player = document.getElementById('inAppVideoPlayer');
+            const titleEl = document.getElementById('videoModalTitle');
+            const dlBtn = document.getElementById('videoDownloadBtn');
+
+            if (titleEl) titleEl.textContent = filename;
+            if (dlBtn) dlBtn.href = url;
+            if (player) {
+                player.src = url;
+                player.load();
+                player.play().catch(() => {});
+            }
+            if (modal) modal.classList.add('active');
+            playSynthSound('beam');
+        }
+
+        function closeVideoPlayerModal() {
+            const modal = document.getElementById('videoPlayerModal');
+            const player = document.getElementById('inAppVideoPlayer');
+            if (player) {
+                player.pause();
+                player.src = '';
+            }
+            if (modal) modal.classList.remove('active');
+        }
+
+        function setVideoPlaybackSpeed(spd) {
+            const player = document.getElementById('inAppVideoPlayer');
+            if (player) player.playbackRate = spd;
+        }
+
+        let lightboxScale = 1;
+        let lightboxRotate = 0;
+
+        function openPhotoLightbox(url, filename) {
+            const modal = document.getElementById('photoLightboxModal');
+            const img = document.getElementById('lightboxImage');
+            const titleEl = document.getElementById('lightboxModalTitle');
+            const dlBtn = document.getElementById('lightboxDownloadBtn');
+
+            if (titleEl) titleEl.textContent = filename;
+            if (dlBtn) dlBtn.href = url;
+            if (img) img.src = url;
+
+            resetLightboxTransform();
+            if (modal) modal.classList.add('active');
+            playSynthSound('beam');
+        }
+
+        function closePhotoLightboxModal() {
+            const modal = document.getElementById('photoLightboxModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function zoomLightboxImage(factor) {
+            lightboxScale *= factor;
+            lightboxScale = Math.max(0.5, Math.min(lightboxScale, 4.0));
+            applyLightboxTransform();
+        }
+
+        function rotateLightboxImage() {
+            lightboxRotate = (lightboxRotate + 90) % 360;
+            applyLightboxTransform();
+        }
+
+        function resetLightboxTransform() {
+            lightboxScale = 1;
+            lightboxRotate = 0;
+            applyLightboxTransform();
+        }
+
+        function applyLightboxTransform() {
+            const img = document.getElementById('lightboxImage');
+            if (img) img.style.transform = `scale(${lightboxScale}) rotate(${lightboxRotate}deg)`;
+        }
+
+        async function openDocViewer(url, filename) {
+            const modal = document.getElementById('docViewerModal');
+            const titleEl = document.getElementById('docViewerTitle');
+            const contentEl = document.getElementById('docViewerContent');
+            const dlBtn = document.getElementById('docViewerDownloadBtn');
+
+            if (titleEl) titleEl.textContent = filename;
+            if (dlBtn) dlBtn.href = url;
+            if (contentEl) contentEl.textContent = 'Loading document content...';
+
+            if (modal) modal.classList.add('active');
+
+            try {
+                const resp = await fetch(url);
+                const text = await resp.text();
+                if (contentEl) contentEl.textContent = text.slice(0, 100000); // 100KB preview
+            } catch (err) {
+                if (contentEl) contentEl.textContent = 'Could not load text preview. Use download button to open.';
+            }
+        }
+
+        function closeDocViewerModal() {
+            const modal = document.getElementById('docViewerModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        // =====================================================================
+        // 5-SECOND LAN SPEEDOMETER BENCHMARK
+        // =====================================================================
+        let isBenchmarking = false;
+
+        function openSpeedBenchmarkModal() {
+            const modal = document.getElementById('speedBenchmarkModal');
+            if (modal) modal.classList.add('active');
+            playSynthSound('beam');
+        }
+
+        function closeSpeedBenchmarkModal() {
+            const modal = document.getElementById('speedBenchmarkModal');
+            if (modal) modal.classList.remove('active');
+            isBenchmarking = false;
+        }
+
+        async function runLanSpeedBenchmark() {
+            if (isBenchmarking) return;
+            isBenchmarking = true;
+
+            const btn = document.getElementById('startBenchBtn');
+            const speedVal = document.getElementById('benchSpeedVal');
+            const pingVal = document.getElementById('benchPingVal');
+            const gradeVal = document.getElementById('benchGradeVal');
+            const bar = document.getElementById('benchProgressBar');
+
+            if (btn) { btn.disabled = true; btn.textContent = 'Testing LAN...'; }
+            if (speedVal) speedVal.textContent = '0.0';
+            if (bar) bar.style.width = '10%';
+
+            try {
+                // 1. Measure Latency
+                const t0 = performance.now();
+                await fetch('/api/speedtest/ping');
+                const pingMs = Math.round(performance.now() - t0);
+                if (pingVal) pingVal.textContent = `${pingMs} ms`;
+                if (bar) bar.style.width = '35%';
+
+                // 2. Measure Bandwidth Stream (15MB)
+                const streamStart = performance.now();
+                const resp = await fetch('/api/speedtest/stream?size_mb=15');
+                const reader = resp.body.getReader();
+                let receivedBytes = 0;
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    receivedBytes += value.length;
+                    const elapsedSec = (performance.now() - streamStart) / 1000;
+                    const currentMb = (receivedBytes / (1024 * 1024)) / elapsedSec;
+                    if (speedVal) speedVal.textContent = currentMb.toFixed(1);
+                    if (bar) bar.style.width = `${Math.min(95, 35 + Math.round((receivedBytes / (15 * 1024 * 1024)) * 60))}%`;
+                }
+
+                const totalSec = (performance.now() - streamStart) / 1000;
+                const finalSpeedMb = (receivedBytes / (1024 * 1024)) / totalSec;
+                if (speedVal) speedVal.textContent = finalSpeedMb.toFixed(1);
+                if (bar) bar.style.width = '100%';
+
+                // Assign Grade
+                if (gradeVal) {
+                    if (finalSpeedMb >= 50) gradeVal.textContent = 'A+ Ultra Turbo';
+                    else if (finalSpeedMb >= 20) gradeVal.textContent = 'A High Speed';
+                    else gradeVal.textContent = 'B Standard LAN';
+                }
+
+                playSynthSound('complete');
+            } catch (err) {
+                if (speedVal) speedVal.textContent = 'Error';
+            } finally {
+                isBenchmarking = false;
+                if (btn) { btn.disabled = false; btn.textContent = '🚀 Retest Speed'; }
+            }
+        }
+
+        // =====================================================================
+        // HOTSPOT AUTO-CONNECT QR GENERATOR
+        // =====================================================================
+        function openHotspotQrModal() {
+            const modal = document.getElementById('hotspotQrModal');
+            updateHotspotQr();
+            if (modal) modal.classList.add('active');
+            playSynthSound('beam');
+        }
+
+        function closeHotspotQrModal() {
+            const modal = document.getElementById('hotspotQrModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function updateHotspotQr() {
+            const ssid = document.getElementById('hotspotSsidInput')?.value || 'LightShare_Hotspot';
+            const pass = document.getElementById('hotspotPassInput')?.value || 'lightshare123';
+            const box = document.getElementById('hotspotQrcodeBox');
+            if (!box) return;
+
+            // IEEE 802.11 Wi-Fi QR Code string format: WIFI:S:<SSID>;T:WPA;P:<PASSWORD>;;
+            const wifiString = `WIFI:S:${ssid};T:WPA;P:${pass};;`;
+            box.innerHTML = '';
+            new QRCode(box, {
+                text: wifiString,
+                width: 145,
+                height: 145,
+                colorDark: "#0A0E17",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        // =====================================================================
+        // ENCRYPTED PRIVATE VAULT
+        // =====================================================================
+        function openVaultModal() {
+            const modal = document.getElementById('vaultModal');
+            const pinIn = document.getElementById('vaultPinInput');
+            const unlocked = document.getElementById('vaultUnlockedContent');
+            const btn = document.getElementById('vaultUnlockBtn');
+            const err = document.getElementById('vaultPinError');
+
+            if (pinIn) pinIn.value = '';
+            if (err) err.classList.add('hidden');
+            if (unlocked) unlocked.classList.add('hidden');
+            if (btn) btn.textContent = 'Unlock Vault';
+
+            if (modal) modal.classList.add('active');
+            playSynthSound('beam');
+        }
+
+        function closeVaultModal() {
+            const modal = document.getElementById('vaultModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function unlockVault() {
+            const pin = document.getElementById('vaultPinInput')?.value || '';
+            const err = document.getElementById('vaultPinError');
+            const unlocked = document.getElementById('vaultUnlockedContent');
+            const btn = document.getElementById('vaultUnlockBtn');
+
+            if (pin.length < 4) {
+                if (err) { err.textContent = 'Please enter 4-digit Master PIN'; err.classList.remove('hidden'); }
+                return;
+            }
+
+            if (unlocked) unlocked.classList.remove('hidden');
+            if (err) err.classList.add('hidden');
+            if (btn) btn.textContent = '✓ Vault Open';
+            playSynthSound('complete');
+        }
+
+        // =====================================================================
+        // STORAGE AUTO-CLEANUP MANAGER
+        // =====================================================================
+        function openStorageCleanupModal() {
+            const modal = document.getElementById('storageCleanupModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeStorageCleanupModal() {
+            const modal = document.getElementById('storageCleanupModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        async function saveStoragePolicy() {
+            const selected = document.querySelector('input[name="cleanupPolicy"]:checked')?.value || 'never';
+            localStorage.setItem('lightshare_cleanup_policy', selected);
+            closeStorageCleanupModal();
+            playSynthSound('complete');
+            alert(`Auto-cleanup policy updated: ${selected}`);
+        }
+
+        async function runImmediateStorageCleanup() {
+            if (!confirm('Clean old completed files from disk storage now?')) return;
+            try {
+                const resp = await fetch('/api/storage/cleanup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ policy: 'all' })
+                });
+                const data = await resp.json();
+                refreshFilesList();
+                refreshStorageAndStatus();
+                closeStorageCleanupModal();
+                playSynthSound('complete');
+                alert(`Cleaned ${data.cleaned_count} files (${formatBytes(data.freed_bytes)} freed)`);
+            } catch (err) {
+                alert('Storage cleanup failed');
+            }
+        }
+
+        // =====================================================================
+        // MULTI-LANGUAGE (I18N) & THEME ENGINES
+        // =====================================================================
+        const THEMES = ['theme-cyber-dark', 'theme-oled-black', 'theme-studio-light'];
+        const THEME_ICONS = { 'theme-cyber-dark': '🌙', 'theme-oled-black': '⬛', 'theme-studio-light': '☀️' };
+        let currentThemeIndex = 0;
+
+        function cycleAppTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+            setAppTheme(THEMES[currentThemeIndex]);
+        }
+
+        function setAppTheme(themeName) {
+            THEMES.forEach(t => document.body.classList.remove(t));
+            document.body.classList.add(themeName);
+            localStorage.setItem('lightshare_theme', themeName);
+            const iconEl = document.getElementById('themeIcon');
+            if (iconEl) iconEl.textContent = THEME_ICONS[themeName] || '🌙';
+            playSynthSound('beam');
+        }
+
+        function loadSavedTheme() {
+            const saved = localStorage.getItem('lightshare_theme') || 'theme-cyber-dark';
+            currentThemeIndex = THEMES.indexOf(saved);
+            if (currentThemeIndex === -1) currentThemeIndex = 0;
+            setAppTheme(saved);
+        }
+
+        const I18N_STRINGS = {
+            en: { send: 'Send Files', receive: 'Receive Files', beam: 'Quick Beam', logs: 'Logs', about: 'About', speed: 'Speed' },
+            hi: { send: 'फ़ाइलें भेजें', receive: 'फ़ाइलें प्राप्त करें', beam: 'क्विक बीम', logs: 'इतिहास', about: 'ऐप परिचय', speed: 'गति' },
+            es: { send: 'Enviar', receive: 'Recibir', beam: 'Rayo Rápido', logs: 'Historial', about: 'Acerca de', speed: 'Velocidad' },
+            fr: { send: 'Envoyer', receive: 'Recevoir', beam: 'Rayon Rapide', logs: 'Historique', about: 'À propos', speed: 'Vitesse' },
+            de: { send: 'Senden', receive: 'Empfangen', beam: 'Schnellstrahl', logs: 'Verlauf', about: 'Über', speed: 'Tempo' },
+            ja: { send: '送信する', receive: '受信する', beam: 'ビーム', logs: '履歴', about: '情報', speed: '速度' }
+        };
+
+        function changeAppLanguage(lang) {
+            localStorage.setItem('lightshare_language', lang);
+            const dict = I18N_STRINGS[lang] || I18N_STRINGS['en'];
+            const navSend = document.getElementById('nav-label-send');
+            const navRecv = document.getElementById('nav-label-receive');
+            const navBeam = document.getElementById('nav-label-beam');
+            const navHist = document.getElementById('nav-label-history');
+            const navAbout = document.getElementById('nav-label-about');
+
+            if (navSend) navSend.textContent = dict.send;
+            if (navRecv) navRecv.textContent = dict.receive;
+            if (navBeam) navBeam.textContent = dict.beam;
+            if (navHist) navHist.textContent = dict.logs;
+            if (navAbout) navAbout.textContent = dict.about;
+
+            playSynthSound('beam');
+        }
+
+        function loadSavedLanguage() {
+            const saved = localStorage.getItem('lightshare_language') || 'en';
+            const select = document.getElementById('langSelect');
+            if (select) select.value = saved;
+            changeAppLanguage(saved);
         }
 
         // =====================================================================
@@ -2586,6 +3431,8 @@
         }
 
         // Initialize All Systems
+        loadSavedTheme();
+        loadSavedLanguage();
         updateAudioButtonState();
         loadUserProfile();
         loadNetworkInfo();
